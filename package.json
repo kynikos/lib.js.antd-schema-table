@@ -1,0 +1,35 @@
+{
+  "name": "@kynikos/antd-schema-table",
+  "version": "1.0.0",
+  "author": "Dario Giovannetti",
+  "description": "Ant Design Schema-configured Table.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kynikos/lib.js.antd-schema-table.git"
+  },
+  "keywords": [
+    "ant-design react table"
+  ],
+  "scripts": {
+    "compile": "coffee --compile --transpile index.coffee"
+  },
+  "dependencies": {
+    "antd": "^3.3.1",
+    "react": "^16.2.0"
+  },
+  "optionalDependencies": {
+    "papaparse": "^4.3.7"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "coffeelint": "^2.1.0",
+    "coffeescript": "^2.1.1"
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  }
+}
