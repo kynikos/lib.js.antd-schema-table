@@ -91,6 +91,36 @@ class FieldString extends SchemaField
 module.exports.FieldString = FieldString
 
 
+class module.exports.FieldBooleany extends FieldString
+    constructor: (props) ->
+        super(props)
+        @trueyValue = props.trueyValue
+        @falseyValue = props.falseyValue
+
+    _renderify: (value, item, index) ->
+        if value then @trueyValue else @falseyValue
+
+    _searchify: (value, item, index) ->
+        if value then @trueyValue else @falseyValue
+
+    _filterify: (value, item, index) ->
+        if value then @trueyValue else @falseyValue
+
+    _sortify: (value, item, index) ->
+        if value then @trueyValue else @falseyValue
+
+    _exportify: (value, item, index) ->
+        if value then @trueyValue else @falseyValue
+
+
+class module.exports.FieldList extends FieldString
+    _renderify: (value, item, index) -> value.join(', ')
+    _searchify: (value, item, index) -> value.join(', ')
+    _filterify: (value, item, index) -> value.join(', ')
+    _sortify: (value, item, index) -> value.join(', ')
+    _exportify: (value, item, index) -> value.join(', ')
+
+
 class module.exports.FieldChoice extends FieldString
     constructor: (props) ->
         super(props)
