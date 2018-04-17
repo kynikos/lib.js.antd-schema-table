@@ -137,11 +137,23 @@ class module.exports.FieldChoice extends FieldString
 
 
 class module.exports.FieldNumber extends SchemaField
+    _renderify: (value, item, index) ->
+        super(value is 0 and '0' or value, item, index)
+
+    _searchify: (value, item, index) ->
+        super(value is 0 and '0' or value, item, index)
+
+    _filterify: (value, item, index) ->
+        super(value is 0 and '0' or value, item, index)
+
     _sortify: (value, item, index) -> value
     sorter: (a, b) ->
         av = a[@key].sortable
         bv = b[@key].sortable
         return av - bv
+
+    _exportify: (value, item, index) ->
+        super(value is 0 and '0' or value, item, index)
 
 
 class module.exports.FieldDateTime extends SchemaField
