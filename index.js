@@ -4,6 +4,8 @@ var _get = function get(object, property, receiver) { if (object === null) objec
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
+
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
@@ -16,7 +18,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
   // Copyright (C) 2018-present Dario Giovannetti <dev@dariogiovannetti.net>
   // Licensed under MIT
   // https://github.com/kynikos/lib.js.antd-schema-table/blob/master/LICENSE
-  var AntDTable, Component, FieldString, Papa, SchemaField, _FieldPrimaryKey, createElement;
+  var AntDTable, Component, FieldString, List, Papa, SchemaField, Spin, Table, _FieldPrimaryKey, createElement;
 
   var _require = require('react');
 
@@ -25,6 +27,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 
   AntDTable = require('antd/lib/table');
+
+  Spin = require('antd/lib/spin');
 
   try {
     Papa = require('papaparse');
@@ -617,7 +621,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           }
           return results;
         }.call(this);
-        // TODO: Optionally use the field titles, but be careful with the NOTE above ##########################################
         data = deserializedData.map(function (item) {
           var i, len, ref, results;
           ref = _this12.fields;
@@ -645,7 +648,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     return Schema;
   }();
 
-  module.exports.Table = function (_Component) {
+  Table = function (_Component) {
     _inherits(Table, _Component);
 
     function Table() {
@@ -656,8 +659,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
     _createClass(Table, [{
       key: 'render',
-
-      // TODO: Also allow querying the data from a server directly from this component ############################
       value: function render() {
         var containerClassName, deserializedData, loading, pagination, rowClassName, schema, tableProps;
         var _props = this.props;
@@ -691,4 +692,40 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
     return Table;
   }(Component);
+
+  module.exports.Table = Table;
+
+  module.exports.List = List = function List(props) {
+    var field, index, row;
+    if (props.loading) {
+      return createElement(Spin);
+    }
+    return createElement('div', {
+      className: props.listClassName
+    }, createElement.apply(undefined, ['table', {}].concat(_toConsumableArray(function () {
+      var i, len, ref, results;
+      ref = props.deserializedData;
+      results = [];
+      for (index = i = 0, len = ref.length; i < len; index = ++i) {
+        row = ref[index];
+        results.push(createElement.apply(undefined, ['tbody', {}].concat(_toConsumableArray(function () {
+          var j, len1, ref1, results1;
+          ref1 = props.schema.fields;
+          results1 = [];
+          for (j = 0, len1 = ref1.length; j < len1; j++) {
+            field = ref1[j];
+            if (field.title) {
+              results1.push(createElement('tr', {}, createElement('th', {}, field.title), createElement('td', {}, field.render(row[field.key]))));
+            }
+          }
+          return results1;
+        }()))));
+      }
+      return results;
+    }()))));
+  };
+
+  module.exports.TableResponsive = function (props) {
+    return createElement(props.narrowMode && List || Table, props);
+  };
 }).call(undefined);

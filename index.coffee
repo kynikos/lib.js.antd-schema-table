@@ -5,6 +5,7 @@
 
 {Component, createElement} = require('react')
 AntDTable = require('antd/lib/table')
+Spin = require('antd/lib/spin')
 
 try
     Papa = require('papaparse')
@@ -246,7 +247,6 @@ class module.exports.Schema
         # I should be safe in this case because the first field should always
         # be 'key'
         fields = (field.key for field in @fields)
-        # TODO: Optionally use the field titles, but be careful with the NOTE above ##########################################
 
         data = deserializedData.map((item) =>
             (field.export(item[field.key]) for field in @fields)
@@ -264,8 +264,7 @@ class module.exports.Schema
         document.body.removeChild(link)
 
 
-class module.exports.Table extends Component
-    # TODO: Also allow querying the data from a server directly from this component ############################
+class Table extends Component
     render: ->
         {schema, loading, deserializedData, pagination, containerClassName,
          rowClassName} = @props
@@ -286,3 +285,30 @@ class module.exports.Table extends Component
         tableProps.rowClassName = rowClassName if rowClassName
 
         createElement(AntDTable, tableProps)
+
+module.exports.Table = Table
+
+
+module.exports.List = List = (props) ->
+    if props.loading
+        return createElement(Spin)
+
+    return createElement('div', {className: props.listClassName}
+        createElement('table', {}
+            (for row, index in props.deserializedData
+                createElement('tbody', {}
+                    (for field in props.schema.fields when field.title
+                        createElement('tr', {}
+                            createElement('th', {}, field.title)
+                            createElement('td', {}
+                                field.render(row[field.key])
+                            )
+                        )
+                    )...
+                )
+            )...
+        )
+    )
+
+module.exports.TableResponsive = (props) ->
+    createElement(props.narrowMode and List or Table, props)
