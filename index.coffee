@@ -115,11 +115,15 @@ class module.exports.FieldBooleany extends FieldString
 
 
 class module.exports.FieldList extends FieldString
-    _renderify: (value, item, index) -> value.join(', ')
-    _searchify: (value, item, index) -> value.join(', ')
-    _filterify: (value, item, index) -> value.join(', ')
-    _sortify: (value, item, index) -> value.join(', ')
-    _exportify: (value, item, index) -> value.join(', ')
+    constructor: (props) ->
+        super(props)
+        @glue = props.glue or ', '
+
+    _renderify: (value, item, index) -> value.join(@glue)
+    _searchify: (value, item, index) -> value.join(@glue).toLowerCase()
+    _filterify: (value, item, index) -> value.join(@glue).toLowerCase()
+    _sortify: (value, item, index) -> value.join(@glue).toLowerCase()
+    _exportify: (value, item, index) -> value.join(@glue)
 
 
 class module.exports.FieldChoice extends FieldString
