@@ -277,9 +277,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       key: '_searchify',
       value: function _searchify(value, item, index) {
         if (value) {
-          return this.trueyValue;
+          return this.trueyValue.toLowerCase();
         } else {
-          return this.falseyValue;
+          return this.falseyValue.toLowerCase();
         }
       }
     }, {
@@ -317,36 +317,39 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
   module.exports.FieldList = function (_FieldString2) {
     _inherits(FieldList, _FieldString2);
 
-    function FieldList() {
+    function FieldList(props) {
       _classCallCheck(this, FieldList);
 
-      return _possibleConstructorReturn(this, (FieldList.__proto__ || Object.getPrototypeOf(FieldList)).apply(this, arguments));
+      var _this5 = _possibleConstructorReturn(this, (FieldList.__proto__ || Object.getPrototypeOf(FieldList)).call(this, props));
+
+      _this5.glue = props.glue || ', ';
+      return _this5;
     }
 
     _createClass(FieldList, [{
       key: '_renderify',
       value: function _renderify(value, item, index) {
-        return value.join(', ');
+        return value.join(this.glue);
       }
     }, {
       key: '_searchify',
       value: function _searchify(value, item, index) {
-        return value.join(', ');
+        return value.join(this.glue).toLowerCase();
       }
     }, {
       key: '_filterify',
       value: function _filterify(value, item, index) {
-        return value.join(', ');
+        return value.join(this.glue).toLowerCase();
       }
     }, {
       key: '_sortify',
       value: function _sortify(value, item, index) {
-        return value.join(', ');
+        return value.join(this.glue).toLowerCase();
       }
     }, {
       key: '_exportify',
       value: function _exportify(value, item, index) {
-        return value.join(', ');
+        return value.join(this.glue);
       }
     }]);
 
@@ -660,12 +663,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     _createClass(Table, [{
       key: 'render',
       value: function render() {
-        var containerClassName, deserializedData, loading, pagination, rowClassName, schema, tableProps;
+        var containerClassName, deserializedData, loading, pagination, rowClassName, rowSelection, schema, tableProps;
         var _props = this.props;
         schema = _props.schema;
         loading = _props.loading;
         deserializedData = _props.deserializedData;
         pagination = _props.pagination;
+        rowSelection = _props.rowSelection;
         containerClassName = _props.containerClassName;
         rowClassName = _props.rowClassName;
 
@@ -674,6 +678,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           // schema.rowKey refers to the serialized data
           rowKey: 'key',
           pagination: pagination || false,
+          rowSelection: rowSelection || null,
           loading: loading,
           dataSource: deserializedData,
           columns: schema.tableColumns,
