@@ -270,14 +270,15 @@ class module.exports.Schema
 
 class Table extends Component
     render: ->
-        {schema, loading, deserializedData, pagination, containerClassName,
-         rowClassName} = @props
+        {schema, loading, deserializedData, pagination, rowSelection,
+         containerClassName, rowClassName} = @props
 
         tableProps = {
             # Note that in the deserialized rows, the rowKey is forced to 'key'
             # schema.rowKey refers to the serialized data
             rowKey: 'key'
             pagination: pagination or false
+            rowSelection: rowSelection or null
             loading
             dataSource: deserializedData
             columns: schema.tableColumns
