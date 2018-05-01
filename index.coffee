@@ -102,7 +102,7 @@ class module.exports.FieldBooleany extends FieldString
         if value then @trueyValue else @falseyValue
 
     _searchify: (value, item, index) ->
-        if value then @trueyValue else @falseyValue
+        if value then @trueyValue.toLowerCase() else @falseyValue.toLowerCase()
 
     _filterify: (value, item, index) ->
         if value then @trueyValue else @falseyValue
