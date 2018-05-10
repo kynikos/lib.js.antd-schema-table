@@ -24,6 +24,7 @@ class SchemaField
         @filterify = props.filterify ? @_filterify
         @sortify = props.sortify ? @_sortify
         @exportify = props.exportify ? @_exportify
+        @width = props.width ? null
 
     _renderify: (value, item, index) -> value and String(value) or ""
     render: (value) ->
@@ -209,7 +210,8 @@ class module.exports.Schema
             # Some fields (e.g. FieldAuxiliary) are only loaded to be used
             # by other fields; they don't specify a 'title'
             if currField.title?
-                {key, defaultSortOrder, title, render, sorter} = currField
+                {key, defaultSortOrder, title, render, sorter, width} =
+                    currField
                 columns.push({
                     # When deserializing the data with load(), this schema
                     # uses the unique 'key' as 'dataIndex'
@@ -219,6 +221,7 @@ class module.exports.Schema
                     render
                     defaultSortOrder
                     sorter
+                    width
                 })
             return columns
         [])
@@ -271,7 +274,7 @@ class module.exports.Schema
 class Table extends Component
     render: ->
         {schema, loading, deserializedData, pagination, rowSelection,
-         containerClassName, rowClassName} = @props
+         containerClassName, rowClassName, expandedRowRender} = @props
 
         tableProps = {
             # Note that in the deserialized rows, the rowKey is forced to 'key'
@@ -284,6 +287,7 @@ class Table extends Component
             columns: schema.tableColumns
             bordered: true
             size: 'small'
+            expandedRowRender: expandedRowRender or null
         }
 
         tableProps.className = containerClassName if containerClassName

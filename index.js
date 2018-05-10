@@ -40,7 +40,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     function SchemaField(props) {
       _classCallCheck(this, SchemaField);
 
-      var ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7;
+      var ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7, ref8;
       this.dataIndex = function () {
         if ((ref = props.dataIndex) != null) {
           return ref;
@@ -56,6 +56,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       this.filterify = (ref5 = props.filterify) != null ? ref5 : this._filterify;
       this.sortify = (ref6 = props.sortify) != null ? ref6 : this._sortify;
       this.exportify = (ref7 = props.exportify) != null ? ref7 : this._exportify;
+      this.width = (ref8 = props.width) != null ? ref8 : null;
     }
 
     _createClass(SchemaField, [{
@@ -530,7 +531,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       this.dataIndexToFields = {};
       this.keyToField = {};
       this.tableColumns = this.fields.reduce(function (columns, currField) {
-        var defaultSortOrder, key, render, sorter, title;
+        var defaultSortOrder, key, render, sorter, title, width;
         if (currField.key in _this9.keyToField) {
           if (currField.key === 'key') {
             throw Error("'key' is reserved for the primary key");
@@ -551,6 +552,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           title = currField.title;
           render = currField.render;
           sorter = currField.sorter;
+          width = currField.width;
 
           columns.push({
             // When deserializing the data with load(), this schema
@@ -560,7 +562,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             title: title,
             render: render,
             defaultSortOrder: defaultSortOrder,
-            sorter: sorter
+            sorter: sorter,
+            width: width
           });
         }
         return columns;
@@ -663,7 +666,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     _createClass(Table, [{
       key: 'render',
       value: function render() {
-        var containerClassName, deserializedData, loading, pagination, rowClassName, rowSelection, schema, tableProps;
+        var containerClassName, deserializedData, expandedRowRender, loading, pagination, rowClassName, rowSelection, schema, tableProps;
         var _props = this.props;
         schema = _props.schema;
         loading = _props.loading;
@@ -672,6 +675,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         rowSelection = _props.rowSelection;
         containerClassName = _props.containerClassName;
         rowClassName = _props.rowClassName;
+        expandedRowRender = _props.expandedRowRender;
 
         tableProps = {
           // Note that in the deserialized rows, the rowKey is forced to 'key'
@@ -683,7 +687,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           dataSource: deserializedData,
           columns: schema.tableColumns,
           bordered: true,
-          size: 'small'
+          size: 'small',
+          expandedRowRender: expandedRowRender || null
         };
         if (containerClassName) {
           tableProps.className = containerClassName;
