@@ -18,12 +18,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
   // Copyright (C) 2018-present Dario Giovannetti <dev@dariogiovannetti.net>
   // Licensed under MIT
   // https://github.com/kynikos/lib.js.antd-schema-table/blob/master/LICENSE
-  var AntDTable, Component, FieldString, List, Papa, SchemaField, Spin, Table, _FieldPrimaryKey, createElement;
+  var AntDTable, Component, FieldString, List, Papa, SchemaField, Spin, Table, _FieldPrimaryKey, h;
 
   var _require = require('react');
 
   Component = _require.Component;
-  createElement = _require.createElement;
+  h = _require.createElement;
 
 
   AntDTable = require('antd/lib/table');
@@ -641,7 +641,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         blob = new Blob([csv], {
           type: 'text/csv'
         });
-        link = document.createElement('a');
+        link = document.h('a');
         link.setAttribute("download", this.exportFileName);
         link.setAttribute("href", window.URL.createObjectURL(blob));
         document.body.insertBefore(link, null);
@@ -696,7 +696,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         if (rowClassName) {
           tableProps.rowClassName = rowClassName;
         }
-        return createElement(AntDTable, tableProps);
+        return h(AntDTable, tableProps);
       }
     }]);
 
@@ -708,24 +708,24 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
   module.exports.List = List = function List(props) {
     var field, index, row;
     if (props.loading) {
-      return createElement(Spin);
+      return h(Spin);
     }
-    return createElement('div', {
+    return h('div', {
       className: props.listClassName
-    }, createElement.apply(undefined, ['table', {}].concat(_toConsumableArray(function () {
+    }, h.apply(undefined, ['table', {}].concat(_toConsumableArray(function () {
       var i, len, ref, results;
       ref = props.deserializedData;
       results = [];
       for (index = i = 0, len = ref.length; i < len; index = ++i) {
         row = ref[index];
-        results.push(createElement.apply(undefined, ['tbody', {}].concat(_toConsumableArray(function () {
+        results.push(h.apply(undefined, ['tbody', {}].concat(_toConsumableArray(function () {
           var j, len1, ref1, results1;
           ref1 = props.schema.fields;
           results1 = [];
           for (j = 0, len1 = ref1.length; j < len1; j++) {
             field = ref1[j];
             if (field.title) {
-              results1.push(createElement('tr', {}, createElement('th', {}, field.title), createElement('td', {}, field.render(row[field.key]))));
+              results1.push(h('tr', {}, h('th', {}, field.title), h('td', {}, field.render(row[field.key]))));
             }
           }
           return results1;
@@ -736,6 +736,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
   };
 
   module.exports.TableResponsive = function (props) {
-    return createElement(props.narrowMode && List || Table, props);
+    return h(props.narrowMode && List || Table, props);
   };
 }).call(undefined);

@@ -3,7 +3,7 @@
 # Licensed under MIT
 # https://github.com/kynikos/lib.js.antd-schema-table/blob/master/LICENSE
 
-{Component, createElement} = require('react')
+{Component, createElement: h} = require('react')
 AntDTable = require('antd/lib/table')
 Spin = require('antd/lib/spin')
 
@@ -262,7 +262,7 @@ class module.exports.Schema
         csv = Papa.unparse({fields, data})
         blob = new Blob([csv], {type: 'text/csv'})
 
-        link = document.createElement('a')
+        link = document.h('a')
         link.setAttribute("download", @exportFileName)
         link.setAttribute("href", window.URL.createObjectURL(blob))
         document.body.insertBefore(link, null)
@@ -293,23 +293,23 @@ class Table extends Component
         tableProps.className = containerClassName if containerClassName
         tableProps.rowClassName = rowClassName if rowClassName
 
-        createElement(AntDTable, tableProps)
+        h(AntDTable, tableProps)
 
 module.exports.Table = Table
 
 
 module.exports.List = List = (props) ->
     if props.loading
-        return createElement(Spin)
+        return h(Spin)
 
-    return createElement('div', {className: props.listClassName}
-        createElement('table', {}
+    return h('div', {className: props.listClassName}
+        h('table', {}
             (for row, index in props.deserializedData
-                createElement('tbody', {}
+                h('tbody', {}
                     (for field in props.schema.fields when field.title
-                        createElement('tr', {}
-                            createElement('th', {}, field.title)
-                            createElement('td', {}
+                        h('tr', {}
+                            h('th', {}, field.title)
+                            h('td', {}
                                 field.render(row[field.key])
                             )
                         )
@@ -320,4 +320,4 @@ module.exports.List = List = (props) ->
     )
 
 module.exports.TableResponsive = (props) ->
-    createElement(props.narrowMode and List or Table, props)
+    h(props.narrowMode and List or Table, props)
