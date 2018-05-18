@@ -707,12 +707,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
   module.exports.List = List = function List(props) {
     var field, index, row;
-    if (props.loading) {
-      return h(Spin);
-    }
     return h('div', {
       className: props.listClassName
-    }, h.apply(undefined, ['table', {}].concat(_toConsumableArray(function () {
+    }, props.loading ? h(Spin) : !(props.deserializedData && props.deserializedData.length) ? h('span', {}, "No data") : h.apply(undefined, ['table', {}].concat(_toConsumableArray(function () {
       var i, len, ref, results;
       ref = props.deserializedData;
       results = [];

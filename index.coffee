@@ -299,24 +299,28 @@ module.exports.Table = Table
 
 
 module.exports.List = List = (props) ->
-    if props.loading
-        return h(Spin)
-
     return h('div', {className: props.listClassName}
-        h('table', {}
-            (for row, index in props.deserializedData
-                h('tbody', {}
-                    (for field in props.schema.fields when field.title
-                        h('tr', {}
-                            h('th', {}, field.title)
-                            h('td', {}
-                                field.render(row[field.key])
+        if props.loading
+            h(Spin)
+
+        else if not (props.deserializedData and props.deserializedData.length)
+            h('span', {}, "No data")
+
+        else
+            h('table', {}
+                (for row, index in props.deserializedData
+                    h('tbody', {}
+                        (for field in props.schema.fields when field.title
+                            h('tr', {}
+                                h('th', {}, field.title)
+                                h('td', {}
+                                    field.render(row[field.key])
+                                )
                             )
-                        )
-                    )...
-                )
-            )...
-        )
+                        )...
+                    )
+                )...
+            )
     )
 
 module.exports.TableResponsive = (props) ->
