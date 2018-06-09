@@ -262,7 +262,7 @@ class module.exports.Schema
         csv = Papa.unparse({fields, data})
         blob = new Blob([csv], {type: 'text/csv'})
 
-        link = document.h('a')
+        link = document.createElement('a')
         link.setAttribute("download", @exportFileName)
         link.setAttribute("href", window.URL.createObjectURL(blob))
         document.body.insertBefore(link, null)
