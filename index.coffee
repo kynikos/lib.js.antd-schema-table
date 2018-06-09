@@ -26,6 +26,7 @@ class SchemaField
         @exportify = props.exportify ? @_exportify
         @width = props.width ? null
         @sorter = props.sorter ? @_sorter
+        @className = props.className ? null
 
     _renderify: (value, item, index) -> value and String(value) or ""
     render: (value) ->
@@ -211,8 +212,8 @@ class module.exports.Schema
             # Some fields (e.g. FieldAuxiliary) are only loaded to be used
             # by other fields; they don't specify a 'title'
             if currField.title?
-                {key, defaultSortOrder, title, render, sorter, width} =
-                    currField
+                {key, defaultSortOrder, title, render, sorter, width,
+                    className} = currField
                 columns.push({
                     # When deserializing the data with load(), this schema
                     # uses the unique 'key' as 'dataIndex'
@@ -223,6 +224,7 @@ class module.exports.Schema
                     defaultSortOrder
                     sorter
                     width
+                    className
                 })
             return columns
         [])
