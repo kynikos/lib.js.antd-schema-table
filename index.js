@@ -40,7 +40,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     function SchemaField(props) {
       _classCallCheck(this, SchemaField);
 
-      var ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7, ref8;
+      var ref, ref1, ref10, ref2, ref3, ref4, ref5, ref6, ref7, ref8, ref9;
       this.dataIndex = function () {
         if ((ref = props.dataIndex) != null) {
           return ref;
@@ -57,6 +57,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       this.sortify = (ref6 = props.sortify) != null ? ref6 : this._sortify;
       this.exportify = (ref7 = props.exportify) != null ? ref7 : this._exportify;
       this.width = (ref8 = props.width) != null ? ref8 : null;
+      this.sorter = (ref9 = props.sorter) != null ? ref9 : this._sorter;
+      this.className = (ref10 = props.className) != null ? ref10 : null;
     }
 
     _createClass(SchemaField, [{
@@ -95,8 +97,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         return value && String(value).toLowerCase() || "";
       }
     }, {
-      key: 'sorter',
-      value: function sorter(a, b) {
+      key: '_sorter',
+      value: function _sorter(a, b) {
         var av, bv;
         av = a[this.key].sortable;
         bv = b[this.key].sortable;
@@ -168,8 +170,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         return true;
       }
     }, {
-      key: 'sorter',
-      value: function sorter(a, b) {
+      key: '_sorter',
+      value: function _sorter(a, b) {
         return 0;
       }
     }, {
@@ -433,8 +435,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         return value;
       }
     }, {
-      key: 'sorter',
-      value: function sorter(a, b) {
+      key: '_sorter',
+      value: function _sorter(a, b) {
         var av, bv;
         av = a[this.key].sortable;
         bv = b[this.key].sortable;
@@ -458,24 +460,26 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
       var _this8 = _possibleConstructorReturn(this, (FieldDateTime.__proto__ || Object.getPrototypeOf(FieldDateTime)).call(this, props));
 
-      _this8.dateFormat = props.dateFormat || "L LTS";
+      _this8.dateFormat = props.dateFormat || function (value) {
+        return value && String(value) || "";
+      };
       return _this8;
     }
 
     _createClass(FieldDateTime, [{
       key: '_renderify',
       value: function _renderify(value, item, index) {
-        return value && moment(value).format(this.dateFormat) || "";
+        return this.dateFormat(value);
       }
     }, {
       key: '_searchify',
       value: function _searchify(value, item, index) {
-        return value && moment(value).format(this.dateFormat).toLowerCase() || "";
+        return this.dateFormat(value).toLowerCase();
       }
     }, {
       key: '_filterify',
       value: function _filterify(value, item, index) {
-        return value && moment(value).format(this.dateFormat) || "";
+        return this.dateFormat(value);
       }
     }, {
       key: '_sortify',
@@ -483,8 +487,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         return value && new Date(value) || null;
       }
     }, {
-      key: 'sorter',
-      value: function sorter(a, b) {
+      key: '_sorter',
+      value: function _sorter(a, b) {
         var av, bv;
         av = a[this.key].sortable;
         bv = b[this.key].sortable;
@@ -531,7 +535,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       this.dataIndexToFields = {};
       this.keyToField = {};
       this.tableColumns = this.fields.reduce(function (columns, currField) {
-        var defaultSortOrder, key, render, sorter, title, width;
+        var className, defaultSortOrder, key, render, sorter, title, width;
         if (currField.key in _this9.keyToField) {
           if (currField.key === 'key') {
             throw Error("'key' is reserved for the primary key");
@@ -553,6 +557,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           render = currField.render;
           sorter = currField.sorter;
           width = currField.width;
+          className = currField.className;
 
           columns.push({
             // When deserializing the data with load(), this schema
@@ -563,7 +568,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             render: render,
             defaultSortOrder: defaultSortOrder,
             sorter: sorter,
-            width: width
+            width: width,
+            className: className
           });
         }
         return columns;
@@ -641,7 +647,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         blob = new Blob([csv], {
           type: 'text/csv'
         });
-        link = document.h('a');
+        link = document.createElement('a');
         link.setAttribute("download", this.exportFileName);
         link.setAttribute("href", window.URL.createObjectURL(blob));
         document.body.insertBefore(link, null);
