@@ -25,6 +25,7 @@ class SchemaField
         @sortify = props.sortify ? @_sortify
         @exportify = props.exportify ? @_exportify
         @width = props.width ? null
+        @sorter = props.sorter ? @_sorter
 
     _renderify: (value, item, index) -> value and String(value) or ""
     render: (value) ->
@@ -41,7 +42,7 @@ class SchemaField
 
     _sortify: (value, item, index) ->
         value and String(value).toLowerCase() or ""
-    sorter: (a, b) ->
+    _sorter: (a, b) ->
         av = a[@key].sortable
         bv = b[@key].sortable
         if av < bv then return -1
@@ -72,7 +73,7 @@ class _FieldPrimaryKey extends SchemaField
     search: (value, lowerCaseTerm) -> false
 
     filter: (value, filter) -> true
-    sorter: (a, b) -> 0
+    _sorter: (a, b) -> 0
     export: (value) -> value
 
     deserialize: (value, item, index) -> value
@@ -153,7 +154,7 @@ class module.exports.FieldNumber extends SchemaField
         super(value is 0 and '0' or value, item, index)
 
     _sortify: (value, item, index) -> value
-    sorter: (a, b) ->
+    _sorter: (a, b) ->
         av = a[@key].sortable
         bv = b[@key].sortable
         return av - bv
@@ -177,7 +178,7 @@ class module.exports.FieldDateTime extends SchemaField
         value and moment(value).format(@dateFormat) or ""
 
     _sortify: (value, item, index) -> value and new Date(value) or null
-    sorter: (a, b) ->
+    _sorter: (a, b) ->
         av = a[@key].sortable
         bv = b[@key].sortable
         return av - bv
