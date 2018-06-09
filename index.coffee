@@ -167,16 +167,14 @@ class module.exports.FieldNumber extends SchemaField
 class module.exports.FieldDateTime extends SchemaField
     constructor: (props) ->
         super(props)
-        @dateFormat = props.dateFormat or "L LTS"
+        @dateFormat = props.dateFormat or (value) ->
+            value and String(value) or ""
 
-    _renderify: (value, item, index) ->
-        value and moment(value).format(@dateFormat) or ""
+    _renderify: (value, item, index) -> @dateFormat(value)
 
-    _searchify: (value, item, index) ->
-        value and moment(value).format(@dateFormat).toLowerCase() or ""
+    _searchify: (value, item, index) -> @dateFormat(value).toLowerCase()
 
-    _filterify: (value, item, index) ->
-        value and moment(value).format(@dateFormat) or ""
+    _filterify: (value, item, index) -> @dateFormat(value)
 
     _sortify: (value, item, index) -> value and new Date(value) or null
     _sorter: (a, b) ->
