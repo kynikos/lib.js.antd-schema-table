@@ -117,6 +117,40 @@ class module.exports.FieldBooleany extends FieldString
         if value then @trueyValue else @falseyValue
 
 
+class module.exports.FieldBooleanyNull extends FieldString
+    constructor: (props) ->
+        super(props)
+        @trueyValue = props.trueyValue
+        @falseyValue = props.falseyValue
+        @nullValue = props.nullValue ? ""
+
+    _renderify: (value, item, index) ->
+        if value?
+            return if value then @trueyValue else @falseyValue
+        return @nullValue
+
+    _searchify: (value, item, index) ->
+        if value?
+            return if value then @trueyValue.toLowerCase() \
+                else @falseyValue.toLowerCase()
+        return @nullValue.toLowerCase()
+
+    _filterify: (value, item, index) ->
+        if value?
+            return if value then @trueyValue else @falseyValue
+        return @nullValue
+
+    _sortify: (value, item, index) ->
+        if value?
+            return if value then @trueyValue else @falseyValue
+        return @nullValue
+
+    _exportify: (value, item, index) ->
+        if value?
+            return if value then @trueyValue else @falseyValue
+        return @nullValue
+
+
 class module.exports.FieldList extends FieldString
     constructor: (props) ->
         super(props)
