@@ -317,16 +317,97 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     return FieldBooleany;
   }(FieldString);
 
-  module.exports.FieldList = function (_FieldString2) {
-    _inherits(FieldList, _FieldString2);
+  module.exports.FieldBooleanyNull = function (_FieldString2) {
+    _inherits(FieldBooleanyNull, _FieldString2);
+
+    function FieldBooleanyNull(props) {
+      _classCallCheck(this, FieldBooleanyNull);
+
+      var ref;
+
+      var _this5 = _possibleConstructorReturn(this, (FieldBooleanyNull.__proto__ || Object.getPrototypeOf(FieldBooleanyNull)).call(this, props));
+
+      _this5.trueyValue = props.trueyValue;
+      _this5.falseyValue = props.falseyValue;
+      _this5.nullValue = (ref = props.nullValue) != null ? ref : "";
+      return _this5;
+    }
+
+    _createClass(FieldBooleanyNull, [{
+      key: '_renderify',
+      value: function _renderify(value, item, index) {
+        if (value != null) {
+          if (value) {
+            return this.trueyValue;
+          } else {
+            return this.falseyValue;
+          }
+        }
+        return this.nullValue;
+      }
+    }, {
+      key: '_searchify',
+      value: function _searchify(value, item, index) {
+        if (value != null) {
+          if (value) {
+            return this.trueyValue.toLowerCase();
+          } else {
+            return this.falseyValue.toLowerCase();
+          }
+        }
+        return this.nullValue.toLowerCase();
+      }
+    }, {
+      key: '_filterify',
+      value: function _filterify(value, item, index) {
+        if (value != null) {
+          if (value) {
+            return this.trueyValue;
+          } else {
+            return this.falseyValue;
+          }
+        }
+        return this.nullValue;
+      }
+    }, {
+      key: '_sortify',
+      value: function _sortify(value, item, index) {
+        if (value != null) {
+          if (value) {
+            return this.trueyValue;
+          } else {
+            return this.falseyValue;
+          }
+        }
+        return this.nullValue;
+      }
+    }, {
+      key: '_exportify',
+      value: function _exportify(value, item, index) {
+        if (value != null) {
+          if (value) {
+            return this.trueyValue;
+          } else {
+            return this.falseyValue;
+          }
+        }
+        return this.nullValue;
+      }
+    }]);
+
+    return FieldBooleanyNull;
+  }(FieldString);
+
+  module.exports.FieldList = function (_FieldString3) {
+    _inherits(FieldList, _FieldString3);
 
     function FieldList(props) {
       _classCallCheck(this, FieldList);
 
-      var _this5 = _possibleConstructorReturn(this, (FieldList.__proto__ || Object.getPrototypeOf(FieldList)).call(this, props));
+      var _this6 = _possibleConstructorReturn(this, (FieldList.__proto__ || Object.getPrototypeOf(FieldList)).call(this, props));
 
-      _this5.glue = props.glue || ', ';
-      return _this5;
+      _this6.glue = props.glue || ', ';
+      return _this6;
     }
 
     _createClass(FieldList, [{
@@ -359,16 +440,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     return FieldList;
   }(FieldString);
 
-  module.exports.FieldChoice = function (_FieldString3) {
-    _inherits(FieldChoice, _FieldString3);
+  module.exports.FieldChoice = function (_FieldString4) {
+    _inherits(FieldChoice, _FieldString4);
 
     function FieldChoice(props) {
       _classCallCheck(this, FieldChoice);
 
-      var _this6 = _possibleConstructorReturn(this, (FieldChoice.__proto__ || Object.getPrototypeOf(FieldChoice)).call(this, props));
+      var _this7 = _possibleConstructorReturn(this, (FieldChoice.__proto__ || Object.getPrototypeOf(FieldChoice)).call(this, props));
 
-      _this6.choicesMap = props.choicesMap || {};
-      return _this6;
+      _this7.choicesMap = props.choicesMap || {};
+      return _this7;
     }
 
     _createClass(FieldChoice, [{
@@ -458,12 +539,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     function FieldDateTime(props) {
       _classCallCheck(this, FieldDateTime);
 
-      var _this8 = _possibleConstructorReturn(this, (FieldDateTime.__proto__ || Object.getPrototypeOf(FieldDateTime)).call(this, props));
+      var _this9 = _possibleConstructorReturn(this, (FieldDateTime.__proto__ || Object.getPrototypeOf(FieldDateTime)).call(this, props));
 
-      _this8.dateFormat = props.dateFormat || function (value) {
+      _this9.dateFormat = props.dateFormat || function (value) {
         return value && String(value) || "";
       };
-      return _this8;
+      return _this9;
     }
 
     _createClass(FieldDateTime, [{
@@ -506,7 +587,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
   module.exports.Schema = function () {
     function Schema(settings) {
-      var _this9 = this;
+      var _this10 = this;
 
       _classCallCheck(this, Schema);
 
@@ -536,17 +617,17 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       this.keyToField = {};
       this.tableColumns = this.fields.reduce(function (columns, currField) {
         var className, defaultSortOrder, key, render, sorter, title, width;
-        if (currField.key in _this9.keyToField) {
+        if (currField.key in _this10.keyToField) {
           if (currField.key === 'key') {
             throw Error("'key' is reserved for the primary key");
           }
           throw Error('Duplicated key: ' + currField.key);
         }
-        _this9.keyToField[currField.key] = currField;
-        if (!(currField.dataIndex in _this9.dataIndexToFields)) {
-          _this9.dataIndexToFields[currField.dataIndex] = [currField];
+        _this10.keyToField[currField.key] = currField;
+        if (!(currField.dataIndex in _this10.dataIndexToFields)) {
+          _this10.dataIndexToFields[currField.dataIndex] = [currField];
         } else {
-          _this9.dataIndexToFields[currField.dataIndex].push(currField);
+          _this10.dataIndexToFields[currField.dataIndex].push(currField);
         }
         // Some fields (e.g. FieldAuxiliary) are only loaded to be used
         // by other fields; they don't specify a 'title'
@@ -579,12 +660,12 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     _createClass(Schema, [{
       key: 'load',
       value: function load(data) {
-        var _this10 = this;
+        var _this11 = this;
 
         return data.map(function (item, index) {
           return Object.keys(item).reduce(function (deserializedItem, currKey) {
             var field, i, len, ref, ref1;
-            ref1 = (ref = _this10.dataIndexToFields[currKey]) != null ? ref : [];
+            ref1 = (ref = _this11.dataIndexToFields[currKey]) != null ? ref : [];
             for (i = 0, len = ref1.length; i < len; i++) {
               field = ref1[i];
               deserializedItem[field.key] = field.deserialize(item[currKey], item, index);
@@ -592,21 +673,21 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
             return deserializedItem;
           }, {
             // The constructor checks that 'key' isn't used by any field
-            key: item[_this10.rowKey]
+            key: item[_this11.rowKey]
           });
         });
       }
     }, {
       key: 'searchGlobal',
       value: function searchGlobal(deserializedData, searchText) {
-        var _this11 = this;
+        var _this12 = this;
 
         var searchTextLc;
         if (searchText) {
           searchTextLc = searchText.toLowerCase();
           return deserializedData.filter(function (item) {
             return Object.keys(item).some(function (key) {
-              return _this11.keyToField[key].search(item[key], searchTextLc);
+              return _this12.keyToField[key].search(item[key], searchTextLc);
             });
           });
         }
@@ -615,7 +696,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     }, {
       key: 'exportCSV',
       value: function exportCSV(deserializedData) {
-        var _this12 = this;
+        var _this13 = this;
 
         var blob, csv, data, field, fields, link;
         // NOTE: Do *not* use "ID" as the first field title, or Excel
@@ -635,7 +716,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         }.call(this);
         data = deserializedData.map(function (item) {
           var i, len, ref, results;
-          ref = _this12.fields;
+          ref = _this13.fields;
           results = [];
           for (i = 0, len = ref.length; i < len; i++) {
             field = ref[i];
@@ -672,7 +753,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     _createClass(Table, [{
       key: 'render',
       value: function render() {
-        var containerClassName, deserializedData, expandedRowRender, loading, pagination, rowClassName, rowSelection, schema, tableProps;
+        var containerClassName, defaultExpandAllRows, defaultExpandedRowKeys, deserializedData, expandedRowKeys, expandedRowRender, loading, pagination, rowClassName, rowSelection, schema, tableProps;
         var _props = this.props;
         schema = _props.schema;
         loading = _props.loading;
@@ -682,6 +763,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         containerClassName = _props.containerClassName;
         rowClassName = _props.rowClassName;
         expandedRowRender = _props.expandedRowRender;
+        defaultExpandAllRows = _props.defaultExpandAllRows;
+        defaultExpandedRowKeys = _props.defaultExpandedRowKeys;
+        expandedRowKeys = _props.expandedRowKeys;
 
         tableProps = {
           // Note that in the deserialized rows, the rowKey is forced to 'key'
@@ -694,8 +778,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           columns: schema.tableColumns,
           bordered: true,
           size: 'small',
-          expandedRowRender: expandedRowRender || null
+          expandedRowRender: expandedRowRender || null,
+          defaultExpandAllRows: defaultExpandAllRows || false
         };
+        defaultExpandedRowKeys && (tableProps.defaultExpandedRowKeys = defaultExpandedRowKeys);
+        expandedRowKeys && (tableProps.expandedRowKeys = expandedRowKeys);
         if (containerClassName) {
           tableProps.className = containerClassName;
         }
