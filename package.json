@@ -12,7 +12,7 @@
     "ant-design react table"
   ],
   "scripts": {
-    "compile": "coffee --compile --transpile index.coffee"
+    "compile": "./node_modules/.bin/coffee --compile --transpile index.coffee"
   },
   "dependencies": {
     "antd": "^3.3.1",
