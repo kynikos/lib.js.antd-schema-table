@@ -309,7 +309,8 @@ class module.exports.Schema
 class Table extends Component
     render: ->
         {schema, loading, deserializedData, pagination, rowSelection,
-         containerClassName, rowClassName, expandedRowRender} = @props
+         containerClassName, rowClassName, expandedRowRender,
+         defaultExpandAllRows, defaultExpandedRowKeys, expandedRowKeys} = @props
 
         tableProps = {
             # Note that in the deserialized rows, the rowKey is forced to 'key'
@@ -323,8 +324,13 @@ class Table extends Component
             bordered: true
             size: 'small'
             expandedRowRender: expandedRowRender or null
+            defaultExpandAllRows: defaultExpandAllRows or false
         }
 
+        defaultExpandedRowKeys &&
+            tableProps.defaultExpandedRowKeys = defaultExpandedRowKeys
+        expandedRowKeys &&
+            tableProps.expandedRowKeys = expandedRowKeys
         tableProps.className = containerClassName if containerClassName
         tableProps.rowClassName = rowClassName if rowClassName
 
