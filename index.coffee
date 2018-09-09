@@ -310,7 +310,8 @@ class Table extends Component
     render: ->
         {schema, loading, deserializedData, pagination, rowSelection,
          containerClassName, rowClassName, expandedRowRender,
-         defaultExpandAllRows, defaultExpandedRowKeys, expandedRowKeys} = @props
+         defaultExpandAllRows_requiresNewKey,
+         defaultExpandedRowKeys_requiresNewKey, expandedRowKeys} = @props
 
         tableProps = {
             # Note that in the deserialized rows, the rowKey is forced to 'key'
@@ -324,11 +325,15 @@ class Table extends Component
             bordered: true
             size: 'small'
             expandedRowRender: expandedRowRender or null
-            defaultExpandAllRows: defaultExpandAllRows or false
+            # Note that defaultExpandAllRows requires a different component key
+            # for every render
+            defaultExpandAllRows: defaultExpandAllRows_requiresNewKey or false
         }
 
-        defaultExpandedRowKeys &&
-            tableProps.defaultExpandedRowKeys = defaultExpandedRowKeys
+        # Note that defaultExpandedRowKeys requires a different component key
+        # for every render
+        defaultExpandedRowKeys_requiresNewKey &&
+            tableProps.defaultExpandedRowKeys = defaultExpandedRowKeys_requiresNewKey
         expandedRowKeys &&
             tableProps.expandedRowKeys = expandedRowKeys
         tableProps.className = containerClassName if containerClassName

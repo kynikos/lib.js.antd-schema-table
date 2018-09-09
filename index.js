@@ -753,7 +753,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     _createClass(Table, [{
       key: 'render',
       value: function render() {
-        var containerClassName, defaultExpandAllRows, defaultExpandedRowKeys, deserializedData, expandedRowKeys, expandedRowRender, loading, pagination, rowClassName, rowSelection, schema, tableProps;
+        var containerClassName, defaultExpandAllRows_requiresNewKey, defaultExpandedRowKeys_requiresNewKey, deserializedData, expandedRowKeys, expandedRowRender, loading, pagination, rowClassName, rowSelection, schema, tableProps;
         var _props = this.props;
         schema = _props.schema;
         loading = _props.loading;
@@ -763,8 +763,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         containerClassName = _props.containerClassName;
         rowClassName = _props.rowClassName;
         expandedRowRender = _props.expandedRowRender;
-        defaultExpandAllRows = _props.defaultExpandAllRows;
-        defaultExpandedRowKeys = _props.defaultExpandedRowKeys;
+        defaultExpandAllRows_requiresNewKey = _props.defaultExpandAllRows_requiresNewKey;
+        defaultExpandedRowKeys_requiresNewKey = _props.defaultExpandedRowKeys_requiresNewKey;
         expandedRowKeys = _props.expandedRowKeys;
 
         tableProps = {
@@ -779,9 +779,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           bordered: true,
           size: 'small',
           expandedRowRender: expandedRowRender || null,
-          defaultExpandAllRows: defaultExpandAllRows || false
+          // Note that defaultExpandAllRows requires a different component key
+          // for every render
+          defaultExpandAllRows: defaultExpandAllRows_requiresNewKey || false
         };
-        defaultExpandedRowKeys && (tableProps.defaultExpandedRowKeys = defaultExpandedRowKeys);
+        // Note that defaultExpandedRowKeys requires a different component key
+        // for every render
+        defaultExpandedRowKeys_requiresNewKey && (tableProps.defaultExpandedRowKeys = defaultExpandedRowKeys_requiresNewKey);
         expandedRowKeys && (tableProps.expandedRowKeys = expandedRowKeys);
         if (containerClassName) {
           tableProps.className = containerClassName;
