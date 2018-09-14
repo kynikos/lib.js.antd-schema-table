@@ -592,12 +592,6 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       _classCallCheck(this, Schema);
 
       var pkfield, ref, ref1;
-
-      for (var _len = arguments.length, fields1 = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        fields1[_key - 1] = arguments[_key];
-      }
-
-      this.fields = fields1;
       this.rowKey = function () {
         if ((ref = settings.rowKey) != null) {
           return ref;
@@ -605,6 +599,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           throw Error("'rowKey' not specified");
         }
       }();
+      // Support dynamic schemas where fields may be set to null or undefined
+
+      for (var _len = arguments.length, fields = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        fields[_key - 1] = arguments[_key];
+      }
+
+      this.fields = fields.filter(function (field) {
+        return field != null;
+      });
       this.exportFileName = (ref1 = settings.exportFileName) != null ? ref1 : "data.csv";
       // 'key' is reserved for the primary key
       pkfield = new _FieldPrimaryKey({

@@ -220,8 +220,10 @@ class module.exports.FieldDateTime extends SchemaField
 
 
 class module.exports.Schema
-    constructor: (settings, @fields...) ->
+    constructor: (settings, fields...) ->
         @rowKey = settings.rowKey ? throw Error("'rowKey' not specified")
+        # Support dynamic schemas where fields may be set to null or undefined
+        @fields = fields.filter((field) -> field?)
         @exportFileName = settings.exportFileName ? "data.csv"
         # 'key' is reserved for the primary key
         pkfield = new _FieldPrimaryKey({dataIndex: @rowKey, key: 'key'})
