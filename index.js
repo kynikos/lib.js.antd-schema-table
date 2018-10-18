@@ -262,8 +262,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
       var _this4 = _possibleConstructorReturn(this, (FieldBooleany.__proto__ || Object.getPrototypeOf(FieldBooleany)).call(this, props));
 
-      _this4.trueyValue = props.trueyValue;
-      _this4.falseyValue = props.falseyValue;
+      _this4.truthyValue = props.truthyValue;
+      _this4.falsyValue = props.falsyValue;
       return _this4;
     }
 
@@ -271,45 +271,45 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       key: '_renderify',
       value: function _renderify(value, item, index) {
         if (value) {
-          return this.trueyValue;
+          return this.truthyValue;
         } else {
-          return this.falseyValue;
+          return this.falsyValue;
         }
       }
     }, {
       key: '_searchify',
       value: function _searchify(value, item, index) {
         if (value) {
-          return this.trueyValue.toLowerCase();
+          return this.truthyValue.toLowerCase();
         } else {
-          return this.falseyValue.toLowerCase();
+          return this.falsyValue.toLowerCase();
         }
       }
     }, {
       key: '_filterify',
       value: function _filterify(value, item, index) {
         if (value) {
-          return this.trueyValue;
+          return this.truthyValue;
         } else {
-          return this.falseyValue;
+          return this.falsyValue;
         }
       }
     }, {
       key: '_sortify',
       value: function _sortify(value, item, index) {
         if (value) {
-          return this.trueyValue;
+          return this.truthyValue;
         } else {
-          return this.falseyValue;
+          return this.falsyValue;
         }
       }
     }, {
       key: '_exportify',
       value: function _exportify(value, item, index) {
         if (value) {
-          return this.trueyValue;
+          return this.truthyValue;
         } else {
-          return this.falseyValue;
+          return this.falsyValue;
         }
       }
     }]);
@@ -327,8 +327,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
       var _this5 = _possibleConstructorReturn(this, (FieldBooleanyNull.__proto__ || Object.getPrototypeOf(FieldBooleanyNull)).call(this, props));
 
-      _this5.trueyValue = props.trueyValue;
-      _this5.falseyValue = props.falseyValue;
+      _this5.truthyValue = props.truthyValue;
+      _this5.falsyValue = props.falsyValue;
       _this5.nullValue = (ref = props.nullValue) != null ? ref : "";
       return _this5;
     }
@@ -338,9 +338,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       value: function _renderify(value, item, index) {
         if (value != null) {
           if (value) {
-            return this.trueyValue;
+            return this.truthyValue;
           } else {
-            return this.falseyValue;
+            return this.falsyValue;
           }
         }
         return this.nullValue;
@@ -350,9 +350,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       value: function _searchify(value, item, index) {
         if (value != null) {
           if (value) {
-            return this.trueyValue.toLowerCase();
+            return this.truthyValue.toLowerCase();
           } else {
-            return this.falseyValue.toLowerCase();
+            return this.falsyValue.toLowerCase();
           }
         }
         return this.nullValue.toLowerCase();
@@ -362,9 +362,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       value: function _filterify(value, item, index) {
         if (value != null) {
           if (value) {
-            return this.trueyValue;
+            return this.truthyValue;
           } else {
-            return this.falseyValue;
+            return this.falsyValue;
           }
         }
         return this.nullValue;
@@ -374,9 +374,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       value: function _sortify(value, item, index) {
         if (value != null) {
           if (value) {
-            return this.trueyValue;
+            return this.truthyValue;
           } else {
-            return this.falseyValue;
+            return this.falsyValue;
           }
         }
         return this.nullValue;
@@ -386,9 +386,9 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       value: function _exportify(value, item, index) {
         if (value != null) {
           if (value) {
-            return this.trueyValue;
+            return this.truthyValue;
           } else {
-            return this.falseyValue;
+            return this.falsyValue;
           }
         }
         return this.nullValue;

@@ -98,56 +98,56 @@ module.exports.FieldString = FieldString
 class module.exports.FieldBooleany extends FieldString
     constructor: (props) ->
         super(props)
-        @trueyValue = props.trueyValue
-        @falseyValue = props.falseyValue
+        @truthyValue = props.truthyValue
+        @falsyValue = props.falsyValue
 
     _renderify: (value, item, index) ->
-        if value then @trueyValue else @falseyValue
+        if value then @truthyValue else @falsyValue
 
     _searchify: (value, item, index) ->
-        if value then @trueyValue.toLowerCase() else @falseyValue.toLowerCase()
+        if value then @truthyValue.toLowerCase() else @falsyValue.toLowerCase()
 
     _filterify: (value, item, index) ->
-        if value then @trueyValue else @falseyValue
+        if value then @truthyValue else @falsyValue
 
     _sortify: (value, item, index) ->
-        if value then @trueyValue else @falseyValue
+        if value then @truthyValue else @falsyValue
 
     _exportify: (value, item, index) ->
-        if value then @trueyValue else @falseyValue
+        if value then @truthyValue else @falsyValue
 
 
 class module.exports.FieldBooleanyNull extends FieldString
     constructor: (props) ->
         super(props)
-        @trueyValue = props.trueyValue
-        @falseyValue = props.falseyValue
+        @truthyValue = props.truthyValue
+        @falsyValue = props.falsyValue
         @nullValue = props.nullValue ? ""
 
     _renderify: (value, item, index) ->
         if value?
-            return if value then @trueyValue else @falseyValue
+            return if value then @truthyValue else @falsyValue
         return @nullValue
 
     _searchify: (value, item, index) ->
         if value?
-            return if value then @trueyValue.toLowerCase() \
-                else @falseyValue.toLowerCase()
+            return if value then @truthyValue.toLowerCase() \
+                else @falsyValue.toLowerCase()
         return @nullValue.toLowerCase()
 
     _filterify: (value, item, index) ->
         if value?
-            return if value then @trueyValue else @falseyValue
+            return if value then @truthyValue else @falsyValue
         return @nullValue
 
     _sortify: (value, item, index) ->
         if value?
-            return if value then @trueyValue else @falseyValue
+            return if value then @truthyValue else @falsyValue
         return @nullValue
 
     _exportify: (value, item, index) ->
         if value?
-            return if value then @trueyValue else @falseyValue
+            return if value then @truthyValue else @falsyValue
         return @nullValue
 
 
