@@ -362,12 +362,14 @@ class module.exports.Schema
         return deserializedData
 
     exportCSV: (deserializedData) ->
-        # NOTE: Do *not* use "ID" as the first field title, or Excel
-        # will think that it's a SYLK file and raise warnings
+        fields = (field._ancestorFieldTitlesPath.join(' > ') \
+            for field in @fieldsFlat)
+
+        # Make sure not to use "ID" as the first field title, or Excel will
+        # think that it's a SYLK file and raise warnings
         # https://annalear.ca/2010/06/10/why-excel-thinks-your-csv-is-a-sylk/
-        # I should be safe in this case because the first field should always
-        # be 'key'
-        fields = (field.key for field in @fieldsFlat)
+        if fields[0].toLowerCase() is 'id'
+            fields[0] = 'Item ID'
 
         data = deserializedData.map((item) =>
             (field.export(item[field.key]) for field in @fieldsFlat)

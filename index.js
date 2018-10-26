@@ -791,21 +791,22 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         var _this13 = this;
 
         var blob, csv, data, field, fields, link;
-        // NOTE: Do *not* use "ID" as the first field title, or Excel
-        // will think that it's a SYLK file and raise warnings
-        // https://annalear.ca/2010/06/10/why-excel-thinks-your-csv-is-a-sylk/
-        // I should be safe in this case because the first field should always
-        // be 'key'
         fields = function () {
           var i, len, ref, results;
           ref = this.fieldsFlat;
           results = [];
           for (i = 0, len = ref.length; i < len; i++) {
             field = ref[i];
-            results.push(field.key);
+            results.push(field._ancestorFieldTitlesPath.join(' > '));
           }
           return results;
         }.call(this);
+        // Make sure not to use "ID" as the first field title, or Excel will
+        // think that it's a SYLK file and raise warnings
+        // https://annalear.ca/2010/06/10/why-excel-thinks-your-csv-is-a-sylk/
+        if (fields[0].toLowerCase() === 'id') {
+          fields[0] = 'Item ID';
+        }
         data = deserializedData.map(function (item) {
           var i, len, ref, results;
           ref = _this13.fieldsFlat;
