@@ -18,7 +18,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
   // Copyright (C) 2018-present Dario Giovannetti <dev@dariogiovannetti.net>
   // Licensed under MIT
   // https://github.com/kynikos/lib.js.antd-schema-table/blob/master/LICENSE
-  var AntDTable, Component, FieldString, List, Papa, SchemaField, Spin, Table, _FieldPrimaryKey, h;
+  var AntDTable, Component, FieldString, List, Papa, SchemaField, SchemaFieldGroup, Spin, Table, _FieldPrimaryKey, h;
 
   var _require = require('react');
 
@@ -59,9 +59,54 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
       this.width = (ref8 = props.width) != null ? ref8 : null;
       this.sorter = (ref9 = props.sorter) != null ? ref9 : this._sorter;
       this.className = (ref10 = props.className) != null ? ref10 : null;
+      // @_ancestorFieldTitlesPath is initialized later in _postInit()
+      this._ancestorFieldTitlesPath = null;
     }
 
     _createClass(SchemaField, [{
+      key: '_postInit',
+      value: function _postInit(_ref) {
+        var fieldsFlat = _ref.fieldsFlat,
+            dataIndexToFields = _ref.dataIndexToFields,
+            keyToField = _ref.keyToField,
+            ancestorsPath = _ref.ancestorsPath;
+
+        if (this.key in keyToField) {
+          if (this.key === 'key') {
+            // Note that this is effectively thrown when the *second* field
+            // with a 'key' key is found, since the first is the actual
+            // primary-key field
+            throw Error("'key' is reserved for the primary key");
+          }
+          throw Error('Duplicated key: ' + this.key);
+        }
+        fieldsFlat.push(this);
+        keyToField[this.key] = this;
+        if (!(this.dataIndex in dataIndexToFields)) {
+          dataIndexToFields[this.dataIndex] = [this];
+        } else {
+          dataIndexToFields[this.dataIndex].push(this);
+        }
+        this._ancestorFieldTitlesPath = ancestorsPath.concat(this.title || this.key);
+        // Some fields (e.g. FieldAuxiliary) are only loaded to be used
+        // by other fields; they don't specify a 'title'
+        if (this.title != null) {
+          return {
+            // When deserializing the data with load(), this schema
+            // uses the unique 'key' as 'dataIndex'
+            dataIndex: this.key,
+            key: this.key,
+            title: this.title,
+            render: this.render,
+            defaultSortOrder: this.defaultSortOrder,
+            sorter: this.sorter,
+            width: this.width,
+            className: this.className
+          };
+        }
+        return null;
+      }
+    }, {
       key: '_renderify',
       value: function _renderify(value, item, index) {
         return value && String(value) || "";
@@ -585,10 +630,88 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
     return FieldDateTime;
   }(SchemaField);
 
+  SchemaFieldGroup = function () {
+    function SchemaFieldGroup(title) {
+      _classCallCheck(this, SchemaFieldGroup);
+
+      this.title = title;
+      // Support dynamic schemas where fields may be set to null or undefined
+
+      for (var _len = arguments.length, fieldsSubTree = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        fieldsSubTree[_key - 1] = arguments[_key];
+      }
+
+      this.fieldsSubTree = fieldsSubTree.filter(function (field) {
+        return field != null;
+      });
+      // @_ancestorFieldTitlesPath is initialized later in @_postInit()
+      this._ancestorFieldTitlesPath = null;
+    }
+
+    _createClass(SchemaFieldGroup, [{
+      key: '_postInit',
+      value: function _postInit(_ref2) {
+        var _this10 = this;
+
+        var fieldsFlat = _ref2.fieldsFlat,
+            dataIndexToFields = _ref2.dataIndexToFields,
+            keyToField = _ref2.keyToField,
+            ancestorsPath = _ref2.ancestorsPath;
+
+        // Note that for example the root field group has 'null' title
+        this._ancestorFieldTitlesPath = this.title ? ancestorsPath.concat(this.title) : ancestorsPath.slice();
+        return this.fieldsSubTree.reduce(function (columns, currField) {
+          var column;
+          if (currField.fieldsSubTree != null) {
+            return columns.concat({
+              title: currField.title,
+              children: currField._postInit({
+                fieldsFlat: fieldsFlat,
+                dataIndexToFields: dataIndexToFields,
+                keyToField: keyToField,
+                ancestorsPath: _this10._ancestorFieldTitlesPath
+              })
+            });
+          }
+          column = currField._postInit({
+            fieldsFlat: fieldsFlat,
+            dataIndexToFields: dataIndexToFields,
+            keyToField: keyToField,
+            ancestorsPath: _this10._ancestorFieldTitlesPath
+          });
+          if (column) {
+            return columns.concat(column);
+          } else {
+            return columns;
+          }
+        }, []);
+      }
+    }, {
+      key: 'makeNarrowTbody',
+      value: function makeNarrowTbody(row) {
+        var field;
+        return h.apply(undefined, ['tbody', {}].concat(_toConsumableArray(function () {
+          var i, len, ref, results;
+          ref = this.fieldsSubTree;
+          results = [];
+          for (i = 0, len = ref.length; i < len; i++) {
+            field = ref[i];
+            if (field.title) {
+              results.push(h('tr', {}, h('th', {}, field.title), h('td', {}, field.fieldsSubTree != null ? h('table', {}, field.makeNarrowTbody(row)) : field.render(row[field.key]))));
+            }
+          }
+          return results;
+        }.call(this))));
+      }
+    }]);
+
+    return SchemaFieldGroup;
+  }();
+
+  module.exports.SchemaFieldGroup = SchemaFieldGroup;
+
   module.exports.Schema = function () {
     function Schema(settings) {
-      var _this10 = this;
-
       _classCallCheck(this, Schema);
 
       var pkfield, ref, ref1;
@@ -599,65 +722,31 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
           throw Error("'rowKey' not specified");
         }
       }();
-      // Support dynamic schemas where fields may be set to null or undefined
-
-      for (var _len = arguments.length, fields = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        fields[_key - 1] = arguments[_key];
-      }
-
-      this.fields = fields.filter(function (field) {
-        return field != null;
-      });
       this.exportFileName = (ref1 = settings.exportFileName) != null ? ref1 : "data.csv";
       // 'key' is reserved for the primary key
       pkfield = new _FieldPrimaryKey({
         dataIndex: this.rowKey,
         key: 'key'
       });
-      // NOTE: pkfield is needed in @fields for example by exportCSV()
-      this.fields.unshift(pkfield);
+      // At least the @tableColumns reducer relies on pkfield to be the first
+      // item in @fieldsTree
+      // NOTE: pkfield is needed in @fieldsFlat for example by exportCSV()
+
+      for (var _len2 = arguments.length, fieldsTree = Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
+        fieldsTree[_key2 - 1] = arguments[_key2];
+      }
+
+      fieldsTree.unshift(pkfield);
+      this.fieldsTree = new (Function.prototype.bind.apply(SchemaFieldGroup, [null].concat([null], fieldsTree)))();
+      this.fieldsFlat = [];
       this.dataIndexToFields = {};
       this.keyToField = {};
-      this.tableColumns = this.fields.reduce(function (columns, currField) {
-        var className, defaultSortOrder, key, render, sorter, title, width;
-        if (currField.key in _this10.keyToField) {
-          if (currField.key === 'key') {
-            throw Error("'key' is reserved for the primary key");
-          }
-          throw Error('Duplicated key: ' + currField.key);
-        }
-        _this10.keyToField[currField.key] = currField;
-        if (!(currField.dataIndex in _this10.dataIndexToFields)) {
-          _this10.dataIndexToFields[currField.dataIndex] = [currField];
-        } else {
-          _this10.dataIndexToFields[currField.dataIndex].push(currField);
-        }
-        // Some fields (e.g. FieldAuxiliary) are only loaded to be used
-        // by other fields; they don't specify a 'title'
-        if (currField.title != null) {
-          key = currField.key;
-          defaultSortOrder = currField.defaultSortOrder;
-          title = currField.title;
-          render = currField.render;
-          sorter = currField.sorter;
-          width = currField.width;
-          className = currField.className;
-
-          columns.push({
-            // When deserializing the data with load(), this schema
-            // uses the unique 'key' as 'dataIndex'
-            dataIndex: key,
-            key: key,
-            title: title,
-            render: render,
-            defaultSortOrder: defaultSortOrder,
-            sorter: sorter,
-            width: width,
-            className: className
-          });
-        }
-        return columns;
-      }, []);
+      this.tableColumns = this.fieldsTree._postInit({
+        fieldsFlat: this.fieldsFlat,
+        dataIndexToFields: this.dataIndexToFields,
+        keyToField: this.keyToField,
+        ancestorsPath: []
+      });
     }
 
     _createClass(Schema, [{
@@ -709,7 +798,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         // be 'key'
         fields = function () {
           var i, len, ref, results;
-          ref = this.fields;
+          ref = this.fieldsFlat;
           results = [];
           for (i = 0, len = ref.length; i < len; i++) {
             field = ref[i];
@@ -719,7 +808,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
         }.call(this);
         data = deserializedData.map(function (item) {
           var i, len, ref, results;
-          ref = _this13.fields;
+          ref = _this13.fieldsFlat;
           results = [];
           for (i = 0, len = ref.length; i < len; i++) {
             field = ref[i];
@@ -806,27 +895,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
   module.exports.Table = Table;
 
   module.exports.List = List = function List(props) {
-    var field, index, row;
+    var row;
     return h('div', {
       className: props.listClassName
     }, props.loading ? h(Spin) : !(props.deserializedData && props.deserializedData.length) ? h('span', {}, "No data") : h.apply(undefined, ['table', {}].concat(_toConsumableArray(function () {
       var i, len, ref, results;
       ref = props.deserializedData;
       results = [];
-      for (index = i = 0, len = ref.length; i < len; index = ++i) {
-        row = ref[index];
-        results.push(h.apply(undefined, ['tbody', {}].concat(_toConsumableArray(function () {
-          var j, len1, ref1, results1;
-          ref1 = props.schema.fields;
-          results1 = [];
-          for (j = 0, len1 = ref1.length; j < len1; j++) {
-            field = ref1[j];
-            if (field.title) {
-              results1.push(h('tr', {}, h('th', {}, field.title), h('td', {}, field.render(row[field.key]))));
-            }
-          }
-          return results1;
-        }()))));
+      for (i = 0, len = ref.length; i < len; i++) {
+        row = ref[i];
+        results.push(props.schema.fieldsTree.makeNarrowTbody(row));
       }
       return results;
     }()))));

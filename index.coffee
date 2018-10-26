@@ -28,6 +28,46 @@ class SchemaField
         @sorter = props.sorter ? @_sorter
         @className = props.className ? null
 
+        # @_ancestorFieldTitlesPath is initialized later in _postInit()
+        @_ancestorFieldTitlesPath = null
+
+    _postInit: ({fieldsFlat, dataIndexToFields, keyToField, ancestorsPath}) ->
+        if @key of keyToField
+            if @key is 'key'
+                # Note that this is effectively thrown when the *second* field
+                # with a 'key' key is found, since the first is the actual
+                # primary-key field
+                throw Error("'key' is reserved for the primary key")
+            throw Error("Duplicated key: #{@key}")
+
+        fieldsFlat.push(this)
+        keyToField[@key] = this
+
+        if @dataIndex not of dataIndexToFields
+            dataIndexToFields[@dataIndex] = [this]
+        else
+            dataIndexToFields[@dataIndex].push(this)
+
+        @_ancestorFieldTitlesPath = ancestorsPath.concat(@title or @key)
+
+        # Some fields (e.g. FieldAuxiliary) are only loaded to be used
+        # by other fields; they don't specify a 'title'
+        if @title?
+            return {
+                # When deserializing the data with load(), this schema
+                # uses the unique 'key' as 'dataIndex'
+                dataIndex: @key
+                key: @key
+                title: @title
+                render: @render
+                defaultSortOrder: @defaultSortOrder
+                sorter: @sorter
+                width: @width
+                className: @className
+            }
+
+        return null
+
     _renderify: (value, item, index) -> value and String(value) or ""
     render: (value) ->
         return value.renderable
@@ -219,49 +259,86 @@ class module.exports.FieldDateTime extends SchemaField
     _exportify: (value, item, index) -> value ? ""
 
 
-class module.exports.Schema
-    constructor: (settings, fields...) ->
-        @rowKey = settings.rowKey ? throw Error("'rowKey' not specified")
+class SchemaFieldGroup
+    constructor: (@title, fieldsSubTree...) ->
         # Support dynamic schemas where fields may be set to null or undefined
-        @fields = fields.filter((field) -> field?)
+        @fieldsSubTree = fieldsSubTree.filter((field) -> field?)
+
+        # @_ancestorFieldTitlesPath is initialized later in @_postInit()
+        @_ancestorFieldTitlesPath = null
+
+    _postInit: ({fieldsFlat, dataIndexToFields, keyToField, ancestorsPath}) ->
+        @_ancestorFieldTitlesPath =
+            # Note that for example the root field group has 'null' title
+            if @title then ancestorsPath.concat(@title) \
+            else ancestorsPath.slice()
+
+        return @fieldsSubTree.reduce((columns, currField) =>
+            if currField.fieldsSubTree?
+                return columns.concat({
+                    title: currField.title
+                    children: currField._postInit({
+                        fieldsFlat
+                        dataIndexToFields
+                        keyToField
+                        ancestorsPath: @_ancestorFieldTitlesPath
+                    })
+                })
+
+            column = currField._postInit({
+                fieldsFlat
+                dataIndexToFields
+                keyToField
+                ancestorsPath: @_ancestorFieldTitlesPath
+            })
+
+            return if column then columns.concat(column) else columns
+        [])
+
+    makeNarrowTbody: (row) ->
+        h('tbody', {}
+            (for field in @fieldsSubTree when field.title
+                h('tr', {}
+                    h('th', {}, field.title)
+                    h('td', {}
+                        if field.fieldsSubTree?
+                            h('table', {}
+                                field.makeNarrowTbody(row)
+                            )
+                        else
+                            field.render(row[field.key])
+                    )
+                )
+            )...
+        )
+
+module.exports.SchemaFieldGroup = SchemaFieldGroup
+
+
+class module.exports.Schema
+    constructor: (settings, fieldsTree...) ->
+        @rowKey = settings.rowKey ? throw Error("'rowKey' not specified")
         @exportFileName = settings.exportFileName ? "data.csv"
+
         # 'key' is reserved for the primary key
         pkfield = new _FieldPrimaryKey({dataIndex: @rowKey, key: 'key'})
-        # NOTE: pkfield is needed in @fields for example by exportCSV()
-        @fields.unshift(pkfield)
+        # At least the @tableColumns reducer relies on pkfield to be the first
+        # item in @fieldsTree
+        # NOTE: pkfield is needed in @fieldsFlat for example by exportCSV()
+        fieldsTree.unshift(pkfield)
+
+        @fieldsTree = new SchemaFieldGroup(null, fieldsTree...)
+
+        @fieldsFlat = []
         @dataIndexToFields = {}
         @keyToField = {}
-        @tableColumns = @fields.reduce((columns, currField) =>
-            if currField.key of @keyToField
-                if currField.key is 'key'
-                    throw Error("'key' is reserved for the primary key")
-                throw Error("Duplicated key: #{currField.key}")
-            @keyToField[currField.key] = currField
 
-            if currField.dataIndex not of @dataIndexToFields
-                @dataIndexToFields[currField.dataIndex] = [currField]
-            else
-                @dataIndexToFields[currField.dataIndex].push(currField)
-
-            # Some fields (e.g. FieldAuxiliary) are only loaded to be used
-            # by other fields; they don't specify a 'title'
-            if currField.title?
-                {key, defaultSortOrder, title, render, sorter, width,
-                    className} = currField
-                columns.push({
-                    # When deserializing the data with load(), this schema
-                    # uses the unique 'key' as 'dataIndex'
-                    dataIndex: key
-                    key
-                    title
-                    render
-                    defaultSortOrder
-                    sorter
-                    width
-                    className
-                })
-            return columns
-        [])
+        @tableColumns = @fieldsTree._postInit({
+            fieldsFlat: @fieldsFlat
+            dataIndexToFields: @dataIndexToFields
+            keyToField: @keyToField
+            ancestorsPath: []
+        })
 
     load: (data) ->
         data.map((item, index) =>
@@ -290,10 +367,10 @@ class module.exports.Schema
         # https://annalear.ca/2010/06/10/why-excel-thinks-your-csv-is-a-sylk/
         # I should be safe in this case because the first field should always
         # be 'key'
-        fields = (field.key for field in @fields)
+        fields = (field.key for field in @fieldsFlat)
 
         data = deserializedData.map((item) =>
-            (field.export(item[field.key]) for field in @fields)
+            (field.export(item[field.key]) for field in @fieldsFlat)
         )
 
         csv = Papa.unparse({fields, data})
@@ -338,6 +415,7 @@ class Table extends Component
             tableProps.defaultExpandedRowKeys = defaultExpandedRowKeys_requiresNewKey
         expandedRowKeys &&
             tableProps.expandedRowKeys = expandedRowKeys
+
         tableProps.className = containerClassName if containerClassName
         tableProps.rowClassName = rowClassName if rowClassName
 
@@ -356,17 +434,8 @@ module.exports.List = List = (props) ->
 
         else
             h('table', {}
-                (for row, index in props.deserializedData
-                    h('tbody', {}
-                        (for field in props.schema.fields when field.title
-                            h('tr', {}
-                                h('th', {}, field.title)
-                                h('td', {}
-                                    field.render(row[field.key])
-                                )
-                            )
-                        )...
-                    )
+                (for row in props.deserializedData
+                    props.schema.fieldsTree.makeNarrowTbody(row)
                 )...
             )
     )
