@@ -4,8 +4,8 @@
 # https://github.com/kynikos/lib.js.antd-schema-table/blob/master/LICENSE
 
 {Component, createElement: h} = require('react')
-AntDTable = require('antd/lib/table')
-Spin = require('antd/lib/spin')
+AntDTable = require('antd/lib/table').default
+Spin = require('antd/lib/spin').default
 
 try
     Papa = require('papaparse')
