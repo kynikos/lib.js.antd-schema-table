@@ -12,7 +12,7 @@
     "ant-design react table"
   ],
   "scripts": {
-    "compile": "./node_modules/.bin/coffee --compile --transpile index.coffee"
+    "compile": "./node_modules/.bin/babel index.es6.js --out-file index.js"
   },
   "dependencies": {
     "antd": "^3.13.5",
@@ -22,10 +22,10 @@
     "papaparse": "^4.3.7"
   },
   "devDependencies": {
-    "babel-core": "^6.26.3",
+    "babel-cli": "^6.26.0",
     "babel-preset-env": "^1.7.0",
-    "coffeelint": "^2.1.0",
-    "coffeescript": "^2.3.2"
+    "eslint": "^5.14.1",
+    "eslint-plugin-babel": "^5.3.0"
   },
   "babel": {
     "presets": [
