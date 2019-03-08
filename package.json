@@ -1,6 +1,6 @@
 {
   "name": "@kynikos/antd-schema-table",
-  "version": "1.0.13",
+  "version": "1.1.0",
   "author": "Dario Giovannetti",
   "description": "Ant Design Schema-configured Table.",
   "license": "MIT",
