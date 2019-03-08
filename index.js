@@ -23,6 +23,7 @@ var _require = require('react'),
     Component = _require.Component,
     h = _require.createElement;
 
+var Button = require('antd/lib/button').default;
 var AntDTable = require('antd/lib/table').default;
 var Spin = require('antd/lib/spin').default;
 
@@ -687,12 +688,12 @@ var SchemaFieldGroup = function () {
     }
   }, {
     key: 'makeNarrowTbody',
-    value: function makeNarrowTbody(row) {
+    value: function makeNarrowTbody(row, expandedRowRender) {
       return h.apply(undefined, ['tbody', {}].concat(_toConsumableArray(this.fieldsSubTree.filter(function (field) {
         return field.title;
       }).map(function (field) {
         return h('tr', {}, h('th', {}, field.title), h('td', {}, field.fieldsSubTree == null ? field.render(row[field.key]) : h('table', {}, field.makeNarrowTbody(row))));
-      }))));
+      })), [expandedRowRender && h(ExpandedRow, { row: row, expandedRowRender: expandedRowRender })]));
     }
   }]);
 
@@ -944,12 +945,55 @@ var Table = function (_Component) {
 module.exports.Table = Table;
 
 var List = void 0;
-module.exports.List = List = function List(props) {
-  return h('div', { className: props.listClassName }, props.loading // eslint-disable-line no-nested-ternary
-  ? h(Spin) : props.deserializedData && props.deserializedData.length ? h.apply(undefined, ['table', {}].concat(_toConsumableArray(props.deserializedData.map(function (row) {
-    return props.schema.fieldsTree.makeNarrowTbody(row);
+module.exports.List = List = function List(_ref3) {
+  var listClassName = _ref3.listClassName,
+      loading = _ref3.loading,
+      deserializedData = _ref3.deserializedData,
+      schema = _ref3.schema,
+      expandedRowRender = _ref3.expandedRowRender;
+  return h('div', { className: listClassName }, loading // eslint-disable-line no-nested-ternary
+  ? h(Spin) : deserializedData && deserializedData.length ? h.apply(undefined, ['table', {}].concat(_toConsumableArray(deserializedData.map(function (row) {
+    return schema.fieldsTree.makeNarrowTbody(row, expandedRowRender);
   })))) : h('span', {}, 'No data'));
 };
+
+var ExpandedRow = function (_Component2) {
+  _inherits(ExpandedRow, _Component2);
+
+  function ExpandedRow() {
+    _classCallCheck(this, ExpandedRow);
+
+    var _this15 = _possibleConstructorReturn(this, (ExpandedRow.__proto__ || Object.getPrototypeOf(ExpandedRow)).call(this));
+
+    _this15.state = {
+      expanded: false
+    };
+    return _this15;
+  }
+
+  _createClass(ExpandedRow, [{
+    key: 'render',
+    value: function render() {
+      var _this16 = this;
+
+      var _props2 = this.props,
+          row = _props2.row,
+          expandedRowRender = _props2.expandedRowRender;
+      var expanded = this.state.expanded;
+
+
+      return h('tr', {}, h('th', {}, h(Button, {
+        icon: expanded ? 'minus' : 'plus',
+        size: 'small',
+        onClick: function onClick() {
+          return _this16.setState({ expanded: !expanded });
+        }
+      })), h('td', {}, expanded ? expandedRowRender(row) : null));
+    }
+  }]);
+
+  return ExpandedRow;
+}(Component);
 
 module.exports.TableResponsive = function (props) {
   return h(props.narrowMode && List || Table, props);

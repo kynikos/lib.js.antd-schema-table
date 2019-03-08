@@ -6,6 +6,7 @@
 /* eslint-disable max-classes-per-file */
 
 const {Component, createElement: h} = require('react')
+const Button = require('antd/lib/button').default
 const AntDTable = require('antd/lib/table').default
 const Spin = require('antd/lib/spin').default
 
@@ -428,7 +429,7 @@ class SchemaFieldGroup {
     )
   }
 
-  makeNarrowTbody(row) {
+  makeNarrowTbody(row, expandedRowRender) {
     return h(
       'tbody', {},
       ...this.fieldsSubTree.filter((field) => field.title).map((field) => h(
@@ -443,8 +444,8 @@ class SchemaFieldGroup {
               field.makeNarrowTbody(row)
             )
         )
-      ))
-
+      )),
+      expandedRowRender && h(ExpandedRow, {row, expandedRowRender}),
     )
   }
 }
@@ -589,19 +590,52 @@ module.exports.Table = Table
 
 
 let List
-module.exports.List = List = (props) => h(
+module.exports.List = List = ({
+  listClassName, loading, deserializedData, schema, expandedRowRender,
+}) => h(
   'div',
-  {className: props.listClassName},
-  props.loading // eslint-disable-line no-nested-ternary
+  {className: listClassName},
+  loading // eslint-disable-line no-nested-ternary
     ? h(Spin)
 
-    : props.deserializedData && props.deserializedData.length
+    : deserializedData && deserializedData.length
       ? h(
         'table', {},
-        ...props.deserializedData.map((row) => props.schema.fieldsTree.makeNarrowTbody(row))
+        ...deserializedData.map((row) => schema.fieldsTree.makeNarrowTbody(
+          row,
+          expandedRowRender,
+        ))
       )
       : h('span', {}, 'No data')
 )
+
+
+class ExpandedRow extends Component {
+  constructor() {
+    super()
+    this.state = {
+      expanded: false,
+    }
+  }
+
+  render() {
+    const {row, expandedRowRender} = this.props
+    const {expanded} = this.state
+
+    return h(
+      'tr', {},
+      h('th', {}, h(Button, {
+        icon: expanded ? 'minus' : 'plus',
+        size: 'small',
+        onClick: () => this.setState({expanded: !expanded}),
+      })),
+      h('td', {}, expanded
+        ? expandedRowRender(row)
+        : null
+      ),
+    )
+  }
+}
 
 
 module.exports.TableResponsive = (props) => h(props.narrowMode && List || Table, props)
