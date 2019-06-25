@@ -361,6 +361,7 @@ module.exports.FieldDateTime = class FieldDateTime extends SchemaField {
   constructor(props) {
     super(props)
     this.dateFormat = props.dateFormat || ((value) => value && String(value) || '')
+    this.dateExportFormat = props.dateExportFormat || ((value) => value == null ? '' : value)
   }
 
   _renderify(value, item, index) { return this.dateFormat(value) }
@@ -379,9 +380,7 @@ module.exports.FieldDateTime = class FieldDateTime extends SchemaField {
     return av - bv
   }
 
-  _exportify(value, item, index) { // eslint-disable-line class-methods-use-this
-    return value == null ? '' : value
-  }
+  _exportify(value, item, index) { return this.dateExportFormat(value) }
 }
 
 

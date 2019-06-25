@@ -586,6 +586,9 @@ module.exports.FieldDateTime = function (_SchemaField5) {
     _this9.dateFormat = props.dateFormat || function (value) {
       return value && String(value) || '';
     };
+    _this9.dateExportFormat = props.dateExportFormat || function (value) {
+      return value == null ? '' : value;
+    };
     return _this9;
   }
 
@@ -620,8 +623,7 @@ module.exports.FieldDateTime = function (_SchemaField5) {
   }, {
     key: '_exportify',
     value: function _exportify(value, item, index) {
-      // eslint-disable-line class-methods-use-this
-      return value == null ? '' : value;
+      return this.dateExportFormat(value);
     }
   }]);
 
