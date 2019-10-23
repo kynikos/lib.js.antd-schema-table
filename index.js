@@ -10,7 +10,7 @@ const AntDTable = require('antd/lib/table').default
 const Spin = require('antd/lib/spin').default
 
 import {_FieldPrimaryKey} from './src/_FieldPrimaryKey'
-import {ExpandedRow} from './src/ExpandedRow'
+import {SchemaFieldGroup} from './src/SchemaFieldGroup'
 
 export {FieldAuxiliary} from './src/FieldAuxiliary'
 export {FieldString} from './src/FieldString'
@@ -21,6 +21,7 @@ export {FieldChoice} from './src/FieldChoice'
 export {FieldNumber} from './src/FieldNumber'
 export {FieldDateTime} from './src/FieldDateTime'
 export {SchemaField} from './src/SchemaField'
+export {SchemaFieldGroup}
 
 let Papa
 try {
@@ -28,74 +29,6 @@ try {
 } catch (error) {
   Papa = null
 }
-
-
-class SchemaFieldGroup {
-  constructor(title, ...fieldsSubTree) {
-    // Support dynamic schemas where fields may be set to null or undefined
-    this.title = title
-    this.fieldsSubTree = fieldsSubTree.filter((field) => field != null)
-
-    // _ancestorFieldTitlesPath is initialized later in _postInit()
-    this._ancestorFieldTitlesPath = null
-  }
-
-  _postInit({fieldsFlat, dataIndexToFields, keyToField, ancestorsPath}) {
-    this._ancestorFieldTitlesPath =
-            // Note that for example the root field group has 'null' title
-            this.title
-              ? ancestorsPath.concat(this.title)
-              : ancestorsPath.slice()
-
-    return this.fieldsSubTree.reduce(
-      (columns, currField) => {
-        if (currField.fieldsSubTree != null) {
-          return columns.concat({
-            title: currField.title,
-            children: currField._postInit({
-              fieldsFlat,
-              dataIndexToFields,
-              keyToField,
-              ancestorsPath: this._ancestorFieldTitlesPath,
-            }),
-          })
-        }
-
-        const column = currField._postInit({
-          fieldsFlat,
-          dataIndexToFields,
-          keyToField,
-          ancestorsPath: this._ancestorFieldTitlesPath,
-        })
-
-        if (column) { return columns.concat(column) } return columns
-      },
-      []
-    )
-  }
-
-  makeNarrowTbody(row, expandedRowRender) {
-    return h(
-      'tbody', {},
-      ...this.fieldsSubTree.filter((field) => field.title).map((field) => h(
-        'tr', {},
-        h('th', {}, field.title),
-        h(
-          'td', {},
-          field.fieldsSubTree == null
-            ? field.render(row[field.key])
-            : h(
-              'table', {},
-              field.makeNarrowTbody(row)
-            )
-        )
-      )),
-      expandedRowRender && h(ExpandedRow, {row, expandedRowRender}),
-    )
-  }
-}
-
-module.exports.SchemaFieldGroup = SchemaFieldGroup
 
 
 module.exports.Schema = class Schema {
