@@ -10,6 +10,7 @@ const Button = require('antd/lib/button').default
 const AntDTable = require('antd/lib/table').default
 const Spin = require('antd/lib/spin').default
 import {SchemaField} from './src/SchemaField'
+import {_FieldPrimaryKey} from './src/_FieldPrimaryKey'
 
 export {SchemaField}
 let Papa
@@ -17,40 +18,6 @@ try {
   Papa = require('papaparse') // eslint-disable-line global-require
 } catch (error) {
   Papa = null
-}
-
-
-// 'key' is part of the deserialized data items, so give it a special schema
-// field so that it's not needed to explicitly exclude 'key' when iterating
-// through the items' keys
-class _FieldPrimaryKey extends SchemaField {
-  render(value) { // eslint-disable-line class-methods-use-this
-    return value
-  }
-
-  _searchify(value, item, index) { // eslint-disable-line class-methods-use-this
-    return null
-  }
-
-  search(value, lowerCaseTerm) { // eslint-disable-line class-methods-use-this
-    return false
-  }
-
-  filter(value, filter) { // eslint-disable-line class-methods-use-this
-    return true
-  }
-
-  _sorter(a, b) { // eslint-disable-line class-methods-use-this
-    return 0
-  }
-
-  export(value) { // eslint-disable-line class-methods-use-this
-    return value
-  }
-
-  deserialize(value, item, index) { // eslint-disable-line class-methods-use-this
-    return value
-  }
 }
 
 
