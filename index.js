@@ -18,30 +18,13 @@ export {FieldAuxiliary} from './src/FieldAuxiliary'
 export {FieldString}
 export {FieldBooleany} from './src/FieldBooleany'
 export {FieldBooleanyNull} from './src/FieldBooleanyNull'
+export {FieldList} from './src/FieldList'
 
 let Papa
 try {
   Papa = require('papaparse') // eslint-disable-line global-require
 } catch (error) {
   Papa = null
-}
-
-
-module.exports.FieldList = class FieldList extends FieldString {
-  constructor(props) {
-    super(props)
-    this.glue = props.glue || ', '
-  }
-
-  _renderify(value, item, index) { return value.join(this.glue) }
-
-  _searchify(value, item, index) { return value.join(this.glue).toLowerCase() }
-
-  _filterify(value, item, index) { return value.join(this.glue).toLowerCase() }
-
-  _sortify(value, item, index) { return value.join(this.glue).toLowerCase() }
-
-  _exportify(value, item, index) { return value.join(this.glue) }
 }
 
 
