@@ -17,59 +17,13 @@ export {SchemaField}
 export {FieldAuxiliary} from './src/FieldAuxiliary'
 export {FieldString}
 export {FieldBooleany} from './src/FieldBooleany'
+export {FieldBooleanyNull} from './src/FieldBooleanyNull'
 
 let Papa
 try {
   Papa = require('papaparse') // eslint-disable-line global-require
 } catch (error) {
   Papa = null
-}
-
-
-module.exports.FieldBooleanyNull = class FieldBooleanyNull extends FieldString {
-  constructor(props) {
-    super(props)
-    this.truthyValue = props.truthyValue
-    this.falsyValue = props.falsyValue
-    this.nullValue = props.nullValue == null ? '' : props.nullValue
-  }
-
-  _renderify(value, item, index) {
-    if (value != null) {
-      if (value) { return this.truthyValue } return this.falsyValue
-    }
-    return this.nullValue
-  }
-
-  _searchify(value, item, index) {
-    if (value != null) {
-      if (value) {
-        return this.truthyValue.toLowerCase()
-      } return this.falsyValue.toLowerCase()
-    }
-    return this.nullValue.toLowerCase()
-  }
-
-  _filterify(value, item, index) {
-    if (value != null) {
-      if (value) { return this.truthyValue } return this.falsyValue
-    }
-    return this.nullValue
-  }
-
-  _sortify(value, item, index) {
-    if (value != null) {
-      if (value) { return this.truthyValue } return this.falsyValue
-    }
-    return this.nullValue
-  }
-
-  _exportify(value, item, index) {
-    if (value != null) {
-      if (value) { return this.truthyValue } return this.falsyValue
-    }
-    return this.nullValue
-  }
 }
 
 
