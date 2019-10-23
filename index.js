@@ -6,11 +6,11 @@
 /* eslint-disable max-classes-per-file */
 
 const {Component, createElement: h} = require('react')
-const Button = require('antd/lib/button').default
 const AntDTable = require('antd/lib/table').default
 const Spin = require('antd/lib/spin').default
 
 import {_FieldPrimaryKey} from './src/_FieldPrimaryKey'
+import {ExpandedRow} from './src/ExpandedRow'
 
 export {FieldAuxiliary} from './src/FieldAuxiliary'
 export {FieldString} from './src/FieldString'
@@ -253,34 +253,6 @@ module.exports.List = List = ({
       )
       : h('span', {}, 'No data')
 )
-
-
-class ExpandedRow extends Component {
-  constructor() {
-    super()
-    this.state = {
-      expanded: false,
-    }
-  }
-
-  render() {
-    const {row, expandedRowRender} = this.props
-    const {expanded} = this.state
-
-    return h(
-      'tr', {},
-      h('th', {}, h(Button, {
-        icon: expanded ? 'minus' : 'plus',
-        size: 'small',
-        onClick: () => this.setState({expanded: !expanded}),
-      })),
-      h('td', {}, expanded
-        ? expandedRowRender(row)
-        : null
-      ),
-    )
-  }
-}
 
 
 module.exports.TableResponsive = (props) => h(props.narrowMode && List || Table, props)
