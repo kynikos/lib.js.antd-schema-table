@@ -13,22 +13,13 @@ import {SchemaField} from './src/SchemaField'
 import {_FieldPrimaryKey} from './src/_FieldPrimaryKey'
 
 export {SchemaField}
+export {FieldAuxiliary} from './src/FieldAuxiliary'
+
 let Papa
 try {
   Papa = require('papaparse') // eslint-disable-line global-require
 } catch (error) {
   Papa = null
-}
-
-
-module.exports.FieldAuxiliary = class FieldAuxiliary extends SchemaField {
-  _searchify(value, item, index) { // eslint-disable-line class-methods-use-this
-    return null
-  }
-
-  search(value, lowerCaseTerm) { // eslint-disable-line class-methods-use-this
-    return false
-  }
 }
 
 
