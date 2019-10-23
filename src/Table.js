@@ -9,9 +9,9 @@ import AntDTable from 'antd/lib/table'
 
 export function Table({
   schema, loading, deserializedData, pagination, rowSelection,
-  containerClassName, rowClassName, expandedRowRender,
-  defaultExpandAllRows_requiresNewKey,
-  defaultExpandedRowKeys_requiresNewKey, expandedRowKeys,
+  tableClassName, rowClassName, expandedRowRender,
+  defaultExpandAllRows_requiresNewKey, defaultExpandedRowKeys_requiresNewKey,
+  expandedRowKeys,
 }) {
   const tableProps = {
     // Note that in the deserialized rows, the rowKey is forced to 'key'
@@ -33,11 +33,11 @@ export function Table({
   // Note that defaultExpandedRowKeys requires a different component key
   // for every render
   defaultExpandedRowKeys_requiresNewKey &&
-          (tableProps.defaultExpandedRowKeys = defaultExpandedRowKeys_requiresNewKey)
+    (tableProps.defaultExpandedRowKeys = defaultExpandedRowKeys_requiresNewKey)
   expandedRowKeys &&
-          (tableProps.expandedRowKeys = expandedRowKeys)
+    (tableProps.expandedRowKeys = expandedRowKeys)
 
-  if (containerClassName) { tableProps.className = containerClassName }
+  if (tableClassName) { tableProps.className = tableClassName }
   if (rowClassName) { tableProps.rowClassName = rowClassName }
 
   return h(AntDTable, tableProps)
