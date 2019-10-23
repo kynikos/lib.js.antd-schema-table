@@ -26,6 +26,7 @@ module.exports = {
       'capitalized-comments': ['warn', 'always', {
           'ignoreConsecutiveComments': true,
       }],
+      'class-methods-use-this': 'off',
       'comma-dangle': ['error', 'always-multiline'],
       'curly': ["error", "multi-line"],
       'dot-location': ["error", "property"],
