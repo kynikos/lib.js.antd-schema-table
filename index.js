@@ -19,40 +19,13 @@ export {FieldString}
 export {FieldBooleany} from './src/FieldBooleany'
 export {FieldBooleanyNull} from './src/FieldBooleanyNull'
 export {FieldList} from './src/FieldList'
+export {FieldChoice} from './src/FieldChoice'
 
 let Papa
 try {
   Papa = require('papaparse') // eslint-disable-line global-require
 } catch (error) {
   Papa = null
-}
-
-
-module.exports.FieldChoice = class FieldChoice extends FieldString {
-  constructor(props) {
-    super(props)
-    this.choicesMap = props.choicesMap || {}
-  }
-
-  _renderify(value, item, index) {
-    return this.choicesMap[value] == null ? '' : this.choicesMap[value]
-  }
-
-  _searchify(value, item, index) {
-    return value in this.choicesMap && this.choicesMap[value].toLowerCase() || ''
-  }
-
-  _filterify(value, item, index) {
-    return this.choicesMap[value] == null ? '' : this.choicesMap[value]
-  }
-
-  _sortify(value, item, index) {
-    return this.choicesMap[value] == null ? '' : this.choicesMap[value]
-  }
-
-  _exportify(value, item, index) {
-    return this.choicesMap[value] == null ? '' : this.choicesMap[value]
-  }
 }
 
 
