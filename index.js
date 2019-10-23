@@ -10,10 +10,8 @@ const Button = require('antd/lib/button').default
 const AntDTable = require('antd/lib/table').default
 const Spin = require('antd/lib/spin').default
 
-import {SchemaField} from './src/SchemaField'
 import {_FieldPrimaryKey} from './src/_FieldPrimaryKey'
 
-export {SchemaField}
 export {FieldAuxiliary} from './src/FieldAuxiliary'
 export {FieldString} from './src/FieldString'
 export {FieldBooleany} from './src/FieldBooleany'
@@ -22,6 +20,7 @@ export {FieldList} from './src/FieldList'
 export {FieldChoice} from './src/FieldChoice'
 export {FieldNumber} from './src/FieldNumber'
 export {FieldDateTime} from './src/FieldDateTime'
+export {SchemaField} from './src/SchemaField'
 
 let Papa
 try {
