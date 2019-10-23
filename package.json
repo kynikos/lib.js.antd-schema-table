@@ -11,6 +11,7 @@
   "keywords": [
     "ant-design react table"
   ],
+  "main": "./src/index.js",
   "dependencies": {
     "antd": "^3.24.2",
     "react": "^16.11.0"
