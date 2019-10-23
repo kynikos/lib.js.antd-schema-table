@@ -1,14 +1,11 @@
 module.exports = {
+  'parser': 'babel-eslint',
   'extends': [
       'eslint:all',
   ],
   'parserOptions': {
-      'parser': 'babel-eslint',
-      'ecmaVersion': 2017,
+      'ecmaVersion': 2018,
       'sourceType': 'module',
-      'ecmaFeatures': {
-          'experimentalObjectRestSpread': true,
-      }
   },
   'plugins': [
       'babel', // https://github.com/babel/eslint-plugin-babel
@@ -17,6 +14,7 @@ module.exports = {
       'browser': true,
       'shared-node-browser': true,
       'es6': true,
+      'es2017': true,
       'commonjs': true,
   },
   'rules': {
