@@ -20,41 +20,13 @@ export {FieldBooleany} from './src/FieldBooleany'
 export {FieldBooleanyNull} from './src/FieldBooleanyNull'
 export {FieldList} from './src/FieldList'
 export {FieldChoice} from './src/FieldChoice'
+export {FieldNumber} from './src/FieldNumber'
 
 let Papa
 try {
   Papa = require('papaparse') // eslint-disable-line global-require
 } catch (error) {
   Papa = null
-}
-
-
-module.exports.FieldNumber = class FieldNumber extends SchemaField {
-  _renderify(value, item, index) {
-    return super._renderify(value === 0 && '0' || value, item, index)
-  }
-
-  _searchify(value, item, index) {
-    return super._searchify(value === 0 && '0' || value, item, index)
-  }
-
-  _filterify(value, item, index) {
-    return super._filterify(value === 0 && '0' || value, item, index)
-  }
-
-  _sortify(value, item, index) { // eslint-disable-line class-methods-use-this
-    return value
-  }
-
-  _sorter(a, b) {
-    const av = a[this.key].sortable
-    const bv = b[this.key].sortable
-    return av - bv
-  }
-
-  _exportify(value, item, index) {
-    return super._exportify(value === 0 && '0' || value, item, index)
-  }
 }
 
 
