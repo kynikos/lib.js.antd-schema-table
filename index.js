@@ -16,41 +16,13 @@ import {FieldString} from './src/FieldString'
 export {SchemaField}
 export {FieldAuxiliary} from './src/FieldAuxiliary'
 export {FieldString}
+export {FieldBooleany} from './src/FieldBooleany'
 
 let Papa
 try {
   Papa = require('papaparse') // eslint-disable-line global-require
 } catch (error) {
   Papa = null
-}
-
-
-module.exports.FieldBooleany = class FieldBooleany extends FieldString {
-  constructor(props) {
-    super(props)
-    this.truthyValue = props.truthyValue
-    this.falsyValue = props.falsyValue
-  }
-
-  _renderify(value, item, index) {
-    if (value) { return this.truthyValue } return this.falsyValue
-  }
-
-  _searchify(value, item, index) {
-    if (value) { return this.truthyValue.toLowerCase() } return this.falsyValue.toLowerCase()
-  }
-
-  _filterify(value, item, index) {
-    if (value) { return this.truthyValue } return this.falsyValue
-  }
-
-  _sortify(value, item, index) {
-    if (value) { return this.truthyValue } return this.falsyValue
-  }
-
-  _exportify(value, item, index) {
-    if (value) { return this.truthyValue } return this.falsyValue
-  }
 }
 
 
