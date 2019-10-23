@@ -11,9 +11,11 @@ const AntDTable = require('antd/lib/table').default
 const Spin = require('antd/lib/spin').default
 import {SchemaField} from './src/SchemaField'
 import {_FieldPrimaryKey} from './src/_FieldPrimaryKey'
+import {FieldString} from './src/FieldString'
 
 export {SchemaField}
 export {FieldAuxiliary} from './src/FieldAuxiliary'
+export {FieldString}
 
 let Papa
 try {
@@ -21,31 +23,6 @@ try {
 } catch (error) {
   Papa = null
 }
-
-
-class FieldString extends SchemaField {
-  _renderify(value, item, index) { // eslint-disable-line class-methods-use-this
-    return value == null ? '' : value
-  }
-
-  _searchify(value, item, index) { // eslint-disable-line class-methods-use-this
-    return value && value.toLowerCase() || ''
-  }
-
-  _filterify(value, item, index) { // eslint-disable-line class-methods-use-this
-    return value && value.toLowerCase() || ''
-  }
-
-  _sortify(value, item, index) { // eslint-disable-line class-methods-use-this
-    return value && value.toLowerCase() || ''
-  }
-
-  _exportify(value, item, index) { // eslint-disable-line class-methods-use-this
-    return value == null ? '' : value
-  }
-}
-
-module.exports.FieldString = FieldString
 
 
 module.exports.FieldBooleany = class FieldBooleany extends FieldString {
