@@ -9,13 +9,13 @@ const {Component, createElement: h} = require('react')
 const Button = require('antd/lib/button').default
 const AntDTable = require('antd/lib/table').default
 const Spin = require('antd/lib/spin').default
+
 import {SchemaField} from './src/SchemaField'
 import {_FieldPrimaryKey} from './src/_FieldPrimaryKey'
-import {FieldString} from './src/FieldString'
 
 export {SchemaField}
 export {FieldAuxiliary} from './src/FieldAuxiliary'
-export {FieldString}
+export {FieldString} from './src/FieldString'
 export {FieldBooleany} from './src/FieldBooleany'
 export {FieldBooleanyNull} from './src/FieldBooleanyNull'
 export {FieldList} from './src/FieldList'
