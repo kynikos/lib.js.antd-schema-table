@@ -33,6 +33,7 @@ module.exports = {
       'eqeqeq': ['error', 'smart'],
       'func-names': 'off',
       'func-style': ["error", "declaration", { "allowArrowFunctions": true }],
+      'function-call-argument-newline': ['error', 'consistent'],
       'guard-for-in': 'off',
       'id-length': 'off',
       'indent': ['error', 2],
