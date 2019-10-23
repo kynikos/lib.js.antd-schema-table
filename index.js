@@ -21,39 +21,13 @@ export {FieldBooleanyNull} from './src/FieldBooleanyNull'
 export {FieldList} from './src/FieldList'
 export {FieldChoice} from './src/FieldChoice'
 export {FieldNumber} from './src/FieldNumber'
+export {FieldDateTime} from './src/FieldDateTime'
 
 let Papa
 try {
   Papa = require('papaparse') // eslint-disable-line global-require
 } catch (error) {
   Papa = null
-}
-
-
-module.exports.FieldDateTime = class FieldDateTime extends SchemaField {
-  constructor(props) {
-    super(props)
-    this.dateFormat = props.dateFormat || ((value) => value && String(value) || '')
-    this.dateExportFormat = props.dateExportFormat || ((value) => value == null ? '' : value)
-  }
-
-  _renderify(value, item, index) { return this.dateFormat(value) }
-
-  _searchify(value, item, index) { return this.dateFormat(value).toLowerCase() }
-
-  _filterify(value, item, index) { return this.dateFormat(value) }
-
-  _sortify(value, item, index) { // eslint-disable-line class-methods-use-this
-    return value && new Date(value) || null
-  }
-
-  _sorter(a, b) {
-    const av = a[this.key].sortable
-    const bv = b[this.key].sortable
-    return av - bv
-  }
-
-  _exportify(value, item, index) { return this.dateExportFormat(value) }
 }
 
 
