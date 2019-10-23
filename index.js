@@ -9,130 +9,14 @@ const {Component, createElement: h} = require('react')
 const Button = require('antd/lib/button').default
 const AntDTable = require('antd/lib/table').default
 const Spin = require('antd/lib/spin').default
+import {SchemaField} from './src/SchemaField'
 
+export {SchemaField}
 let Papa
 try {
   Papa = require('papaparse') // eslint-disable-line global-require
 } catch (error) {
   Papa = null
-}
-
-
-class SchemaField {
-  constructor(props) {
-    this.dataIndex = props.dataIndex == null ? (() => { throw Error('dataIndex must be defined') })() : props.dataIndex
-    this.key = props.key || this.dataIndex
-    this.title = props.title == null ? null : props.title
-    this.defaultSortOrder = props.defaultSortOrder == null ? null : props.defaultSortOrder
-    this.renderify = props.renderify == null ? this._renderify : props.renderify
-    this.searchify = props.searchify == null ? this._searchify : props.searchify
-    this.filterify = props.filterify == null ? this._filterify : props.filterify
-    this.sortify = props.sortify == null ? this._sortify : props.sortify
-    this.exportify = props.exportify == null ? this._exportify : props.exportify
-    this.width = props.width == null ? null : props.width
-    this.sorter = props.sorter == null ? this._sorter : props.sorter
-    this.className = props.className == null ? null : props.className
-
-    // this._ancestorFieldTitlesPath is initialized later in _postInit()
-    this._ancestorFieldTitlesPath = null
-  }
-
-  _postInit({fieldsFlat, dataIndexToFields, keyToField, ancestorsPath}) {
-    if (this.key in keyToField) {
-      if (this.key === 'key') {
-        // Note that this is effectively thrown when the *second* field
-        // with a 'key' key is found, since the first is the actual
-        // primary-key field
-        throw Error("'key' is reserved for the primary key")
-      }
-      throw Error(`Duplicated key: ${this.key}`)
-    }
-
-    fieldsFlat.push(this)
-    keyToField[this.key] = this
-
-    if (this.dataIndex in dataIndexToFields) {
-      dataIndexToFields[this.dataIndex].push(this)
-    } else {
-      dataIndexToFields[this.dataIndex] = [this]
-    }
-
-    this._ancestorFieldTitlesPath = ancestorsPath.concat(this.title || this.key)
-
-    // Some fields (e.g. FieldAuxiliary) are only loaded to be used
-    // by other fields; they don't specify a 'title'
-    if (this.title != null) {
-      return {
-        // When deserializing the data with load(), this schema
-        // uses the unique 'key' as 'dataIndex'
-        dataIndex: this.key,
-        key: this.key,
-        title: this.title,
-        render: this.render,
-        defaultSortOrder: this.defaultSortOrder,
-        sorter: this.sorter,
-        width: this.width,
-        className: this.className,
-      }
-    }
-
-    return null
-  }
-
-  _renderify(value, item, index) { // eslint-disable-line class-methods-use-this
-    return value && String(value) || ''
-  }
-
-  render(value) { // eslint-disable-line class-methods-use-this
-    return value.renderable
-  }
-
-  _searchify(value, item, index) { // eslint-disable-line class-methods-use-this
-    return value && String(value).toLowerCase() || ''
-  }
-
-  search(value, lowerCaseTerm) { // eslint-disable-line class-methods-use-this
-    return value.searchable.indexOf(lowerCaseTerm) >= 0
-  }
-
-  _filterify(value, item, index) { // eslint-disable-line class-methods-use-this
-    return value && String(value) || ''
-  }
-
-  filter(value, filter) { // eslint-disable-line class-methods-use-this
-    return value.filterable.indexOf(filter) >= 0
-  }
-
-  _sortify(value, item, index) { // eslint-disable-line class-methods-use-this
-    return value && String(value).toLowerCase() || ''
-  }
-
-  _sorter(a, b) {
-    const av = a[this.key].sortable
-    const bv = b[this.key].sortable
-    if (av < bv) { return -1 }
-    if (av > bv) { return 1 }
-    return 0
-  }
-
-  _exportify(value, item, index) { // eslint-disable-line class-methods-use-this
-    return value && String(value) || ''
-  }
-
-  export(value) { // eslint-disable-line class-methods-use-this
-    return value.exportable
-  }
-
-  deserialize(value, item, index) {
-    return {
-      serialized: value,
-      renderable: this.renderify(value, item, index),
-      searchable: this.searchify(value, item, index),
-      filterable: this.filterify(value, item, index),
-      sortable: this.sortify(value, item, index),
-      exportable: this.exportify(value, item, index),
-    }
-  }
 }
 
 
