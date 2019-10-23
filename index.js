@@ -4,9 +4,9 @@
 // https://github.com/kynikos/lib.js.antd-schema-table/blob/master/LICENSE
 
 const {createElement: h} = require('react')
-const Spin = require('antd/lib/spin').default
 
 import {Table} from './src/Table'
+import {List} from './src/List'
 
 export {FieldAuxiliary} from './src/FieldAuxiliary'
 export {FieldString} from './src/FieldString'
@@ -20,27 +20,7 @@ export {Schema} from './src/Schema'
 export {SchemaField} from './src/SchemaField'
 export {SchemaFieldGroup} from './src/SchemaFieldGroup'
 export {Table}
-
-
-let List
-module.exports.List = List = ({
-  listClassName, loading, deserializedData, schema, expandedRowRender,
-}) => h(
-  'div',
-  {className: listClassName},
-  loading // eslint-disable-line no-nested-ternary
-    ? h(Spin)
-
-    : deserializedData && deserializedData.length
-      ? h(
-        'table', {},
-        ...deserializedData.map((row) => schema.fieldsTree.makeNarrowTbody(
-          row,
-          expandedRowRender,
-        ))
-      )
-      : h('span', {}, 'No data')
-)
+export {List}
 
 
 module.exports.TableResponsive = (props) => h(props.narrowMode && List || Table, props)
