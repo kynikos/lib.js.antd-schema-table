@@ -4,8 +4,8 @@
 // https://github.com/kynikos/lib.js.antd-schema-table/blob/master/LICENSE
 
 import {createElement as h} from 'react'
-import {Table} from './src/Table'
-import {List} from './src/List'
+import {Table} from './Table'
+import {List} from './List'
 
 export function TableResponsive(props) {
   return h(props.narrowMode ? List : Table, props)
