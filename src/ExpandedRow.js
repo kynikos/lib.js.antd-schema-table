@@ -5,6 +5,7 @@
 
 import {createElement as h, useState} from 'react'
 import Button from 'antd/lib/button'
+import {MinusOutlined, PlusOutlined} from '@ant-design/icons'
 
 
 export function ExpandedRow({row, expandedRowRender}) {
@@ -14,7 +15,7 @@ export function ExpandedRow({row, expandedRowRender}) {
     'tr',
     null,
     h('th', null, h(Button, {
-      icon: expanded ? 'minus' : 'plus',
+      icon: expanded ? h(MinusOutlined) : h(PlusOutlined),
       size: 'small',
       onClick: () => setExpanded(!expanded),
     })),

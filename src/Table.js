@@ -24,18 +24,27 @@ export function Table({
     columns: schema.tableColumns,
     bordered: true,
     size: 'small',
-    expandedRowRender: expandedRowRender || null,
-    // Note that defaultExpandAllRows requires a different component key
-    // for every render
-    defaultExpandAllRows: defaultExpandAllRows_requiresNewKey || false,
   }
 
-  // Note that defaultExpandedRowKeys requires a different component key
-  // for every render
-  defaultExpandedRowKeys_requiresNewKey &&
-    (tableProps.defaultExpandedRowKeys = defaultExpandedRowKeys_requiresNewKey)
-  expandedRowKeys &&
-    (tableProps.expandedRowKeys = expandedRowKeys)
+  if (expandedRowRender) {
+    tableProps.expandable = {
+      rowExpandable: () => true,
+      expandedRowRender,
+      // Note that defaultExpandAllRows requires a different component key
+      // for every render
+      defaultExpandAllRows: defaultExpandAllRows_requiresNewKey || false,
+    }
+
+    // Note that defaultExpandedRowKeys requires a different component key
+    // for every render
+    if (defaultExpandedRowKeys_requiresNewKey) {
+      tableProps.expandable.defaultExpandedRowKeys =
+        defaultExpandedRowKeys_requiresNewKey
+    }
+    if (expandedRowKeys) {
+      tableProps.expandable.expandedRowKeys = expandedRowKeys
+    }
+  }
 
   if (tableClassName) { tableProps.className = tableClassName }
   if (rowClassName) { tableProps.rowClassName = rowClassName }
