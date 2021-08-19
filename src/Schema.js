@@ -13,6 +13,13 @@ try {
   Papa = null
 }
 
+let XLSX
+try {
+  XLSX = require('xlsx') // eslint-disable-line global-require
+} catch (error) {
+  XLSX = null
+}
+
 
 export class Schema {
   constructor(settings, ...fieldsTree) {
@@ -75,15 +82,10 @@ export class Schema {
     return deserializedData
   }
 
-  exportCSV(deserializedData) {
-    let field
-    const fields = (() => {
-      const result = []
-      for (field of this.fieldsFlat) {
-        result.push(field._ancestorFieldTitlesPath.join(' > '))
-      }
-      return result
-    })()
+  export(deserializedData) {
+    const fields = this.fieldsFlat.map((field) => {
+      return field._ancestorFieldTitlesPath.join(' > ')
+    })
 
     // Make sure not to use "ID" as the first field title, or Excel will
     // think that it's a SYLK file and raise warnings
@@ -93,18 +95,18 @@ export class Schema {
     }
 
     const data = deserializedData.map((item) => {
-      return (() => {
-        const result1 = []
-        for (field of this.fieldsFlat) {
-          result1.push(field.export(item[field.key]))
-        }
-        return result1
-      })()
+      return this.fieldsFlat.map((field) => {
+        return field.export(item[field.key])
+      })
     })
 
+    return {fields, data}
+  }
+
+  exportCSV(deserializedData) {
+    const {fields, data} = this.export(deserializedData)
     const csv = Papa.unparse({fields, data})
     const blob = new Blob([csv], {type: 'text/csv'})
-
     const link = document.createElement('a')
     link.setAttribute('download', this.exportFileName)
     link.setAttribute('href', window.URL.createObjectURL(blob))
@@ -112,5 +114,14 @@ export class Schema {
     link.click()
     // Apparently iOS Safari doesn't support ChildNode.remove() yet...
     return document.body.removeChild(link)
+  }
+
+  exportXLSX(deserializedData) {
+    const {fields, data} = this.export(deserializedData)
+    const workbook = XLSX.utils.book_new()
+    const worksheetName = this.exportFileName
+    const worksheet = XLSX.utils.aoa_to_sheet([fields].concat(data))
+    XLSX.utils.book_append_sheet(workbook, worksheet, worksheetName)
+    return XLSX.writeFile(workbook, this.exportFileName)
   }
 }
