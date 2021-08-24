@@ -29,6 +29,9 @@ export class Schema {
     this.exportFileName = settings.exportFileName == null
       ? 'data.csv'
       : settings.exportFileName
+    this.exportWorksheetName = settings.exportWorksheetName == null
+      ? 'data'
+      : settings.exportWorksheetName
 
     // 'key' is reserved for the primary key
     const pkfield = new _FieldPrimaryKey({dataIndex: this.rowKey, key: 'key'})
@@ -119,7 +122,8 @@ export class Schema {
   exportXLSX(deserializedData) {
     const {fields, data} = this.export(deserializedData)
     const workbook = XLSX.utils.book_new()
-    const worksheetName = this.exportFileName
+    // Excel disallows worksheet names longer than 31 characters
+    const worksheetName = this.exportWorksheetName
     const worksheet = XLSX.utils.aoa_to_sheet([fields].concat(data))
     XLSX.utils.book_append_sheet(workbook, worksheet, worksheetName)
     return XLSX.writeFile(workbook, this.exportFileName)
