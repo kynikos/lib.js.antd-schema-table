@@ -15,15 +15,11 @@
   "dependencies": {
     "@kynikos/data-schema": "^3.0.0",
     "antd": "^4.7.2",
-    "react": "^17.0.1"
-  },
-  "optionalDependencies": {
-    "papaparse": "^5.2.0",
-    "xlsx": "^0.17.1"
+    "react": "^18.1.0"
   },
   "devDependencies": {
     "babel-eslint": "^10.1.0",
-    "eslint": "^7.11.0",
+    "eslint": "^8.15.0",
     "eslint-plugin-babel": "^5.3.1"
   }
 }
