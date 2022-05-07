@@ -13,6 +13,7 @@
   ],
   "main": "./src/index.js",
   "dependencies": {
+    "@kynikos/data-schema": "^3.0.0",
     "antd": "^4.7.2",
     "react": "^17.0.1"
   },

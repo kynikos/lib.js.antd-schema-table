@@ -5,6 +5,7 @@
 
 import {createElement as h} from 'react'
 import Spin from 'antd/lib/spin'
+import {ExpandedRow} from './ExpandedRow'
 
 
 export function List({
@@ -19,11 +20,37 @@ export function List({
         ? h(
           'table',
           null,
-          ...deserializedData.map((row) => schema.fieldsTree.makeNarrowTbody(
+          ...deserializedData.map((row) => makeNarrowTbody(
+            schema.fieldsTree,
             row,
             expandedRowRender,
-          ))
+          )),
         )
-        : h('span', null, 'No data')
+        : h('span', null, 'No data'),
+  )
+}
+
+
+function makeNarrowTbody(fieldsTree, row, expandedRowRender) {
+  return h(
+    'tbody',
+    null,
+    ...fieldsTree.fieldsSubTree.filter((field) => field.title).map((field) => h(
+      'tr',
+      null,
+      h('th', null, field.title),
+      h(
+        'td',
+        null,
+        field.fieldsSubTree == null
+          ? field.render(row[field.key])
+          : h(
+            'table',
+            null,
+            field.makeNarrowTbody(row),
+          ),
+      ),
+    )),
+    expandedRowRender && h(ExpandedRow, {row, expandedRowRender}),
   )
 }
