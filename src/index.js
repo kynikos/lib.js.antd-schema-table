@@ -6,3 +6,4 @@
 export {Table} from './Table'
 export {List} from './List'
 export {TableResponsive} from './TableResponsive'
+export {Sorter} from './Sorter'

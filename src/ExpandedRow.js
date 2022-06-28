@@ -21,7 +21,7 @@ export function ExpandedRow({row, expandedRowRender}) {
     })),
     h('td', null, expanded
       ? expandedRowRender(row)
-      : null
+      : null,
     ),
   )
 }
