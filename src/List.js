@@ -47,7 +47,7 @@ function makeNarrowTbody(fieldsTree, row, expandedRowRender) {
           : h(
             'table',
             null,
-            field.makeNarrowTbody(row),
+            makeNarrowTbody(field, row, null),
           ),
       ),
     )),
